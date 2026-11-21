@@ -154,7 +154,59 @@ python3 scripts/cluster_eval.py --data data --pairs data_aug/pairs.jsonl \
 сумма, дата), чтобы выбрать конкретное письмо. Кластеры полезны для
 меток, негативов и дедупликации выдачи.
 
+## Гибридный слой: dense + RRF, query expansion, группировка
+
+`smartmail/dense.py` — e5-small в ONNX-квантовке (118 МБ, 384 измерения,
+без torch). `smartmail/hybrid.py` — BM25 + dense через Reciprocal Rank
+Fusion, RM3-расширение запроса, дедупликация near-duplicate писем,
+стратификация выдачи по отправителю/теме и жёсткий фильтр, если в запросе
+явно указан отправитель.
+
+Модель и окружение (один раз):
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install numpy tokenizers onnxruntime
+
+mkdir -p .models/multilingual-e5-small/onnx
+curl -L -o .models/multilingual-e5-small/onnx/model_quantized.onnx \
+  https://huggingface.co/Xenova/multilingual-e5-small/resolve/main/onnx/model_quantized.onnx
+curl -L -o .models/multilingual-e5-small/tokenizer.json \
+  https://huggingface.co/Xenova/multilingual-e5-small/resolve/main/tokenizer.json
+curl -L -o .models/multilingual-e5-small/config.json \
+  https://huggingface.co/Xenova/multilingual-e5-small/resolve/main/config.json
+```
+
+Запуск (эмбеддинги кэшируются в `.cache/`):
+
+```bash
+.venv/bin/python scripts/hybrid_eval.py --data data --split dev
+.venv/bin/python scripts/hybrid_eval.py --data data \
+    --queries data_aug/queries.jsonl --qrels data_aug/qrels.jsonl --split aug
+```
+
+Замеры на dev (7 ящиков из запросов, 9 949 писем):
+
+| Вариант | R@10 | nDCG@10 | MRR@10 | p99 |
+| --- | ---: | ---: | ---: | ---: |
+| BM25 | 0.889 | 0.947 | 0.962 | 23 мс |
+| BM25 + RM3 | 0.898 | 0.947 | 0.964 | 60 мс |
+| hybrid (RRF) | 0.889 | 0.947 | 0.962 | 32 мс |
+| hybrid + RM3 | 0.898 | 0.947 | 0.964 | 16 мс |
+
+На 412 аугментированных запросах: BM25 0.434, hybrid 0.434, dense-only
+0.318, RM3 0.403, dedup+strat 0.342. То есть zero-shot e5-small на этом
+распределении **не лучше BM25**: запросы короткие и шаблонные, а dense
+путается в near-duplicate письмах. Слой оставлен как заготовка под
+файнтюн и как страховка для настоящих пересказов; включать его в прод
+имеет смысл только после замера на своей модели.
+
+Дедуп и стратификация — это слой представления, а не ранжирования:
+на dev, где релевантны десятки одинаковых писем, они ожидаемо роняют
+Recall. Считать метрики нужно до дедупа, а схлопывать уже готовую выдачу.
+
 ## Как устроено
+
 
 
 Три слоя, каждый можно заменить независимо:
@@ -224,11 +276,15 @@ smartmail/
   text.py      нормализация, Snowball-стеммер, soft-prefix
   index.py     BM25 по подмножеству документов (global/local IDF)
   engine.py    SearchEngine: фильтры + ранжирование
+  dense.py     e5-small ONNX, эмбеддинги и кэш
+  hybrid.py    RRF, RM3, дедуп, стратификация, sender-фильтр
   metrics.py   Recall@K, nDCG@K, MRR@K
 evaluate.py    CLI-замер, абляция, отчёты
 demo.py        ручная проверка одного запроса
 scripts/
   augment.py   генерация синтетических запросов (template/OpenAI/Ollama)
+  cluster_eval.py  near-duplicate кластеры и честные метрики
+  hybrid_eval.py   замер BM25 / dense / RRF / RM3
 tests/         47 тестов: даты, стеммер, метрики, фильтры, e2e, аугментация
 ```
 

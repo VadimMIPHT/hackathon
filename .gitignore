@@ -7,3 +7,6 @@ venv/
 *.log
 data_aug/
 reports/*aug*
+.models/
+.cache/
+reports/hybrid_*

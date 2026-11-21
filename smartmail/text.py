@@ -18,6 +18,7 @@ _WORD_RE = re.compile(r"[a-zа-я0-9]+")
 _HTML_RE = re.compile(r"<[^>]{1,500}>")
 _URL_RE = re.compile(r"(?:https?://|www\.)\S+")
 _WS_RE = re.compile(r"\s+")
+_SENDER_RE = re.compile(r"(?im)^\s*(?:от|from)\s*:\s*(\S+)")
 
 # Классический русский стоп-лист (NLTK), немного сокращённый.
 STOPWORDS = frozenset(
@@ -113,6 +114,11 @@ def normalize(value: str) -> str:
 def raw_tokens(value: str) -> list[str]:
     """Токены без стемминга (знаки препинания уже отброшены)."""
     return _WORD_RE.findall(value)
+
+
+def extract_sender(value: str) -> str | None:
+    match = _SENDER_RE.search(value or "")
+    return match.group(1).strip() if match else None
 
 
 def split_subject_body(value: str) -> tuple[str, str]:

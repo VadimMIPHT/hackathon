@@ -85,7 +85,35 @@ class SearchEngine:
                 )
             )
 
+        self._tokens = token_lists
         self._index = BM25Index(token_lists, k1=k1, b=b)
+
+    @property
+    def documents(self) -> list[Document]:
+        return self._docs
+
+    @property
+    def idf(self) -> dict[str, float]:
+        return self._index.idf
+
+    def tokens(self, doc_idx: int) -> list[str]:
+        return self._tokens[doc_idx]
+
+    def snippet(self, doc_idx: int) -> str:
+        return self._snippets[doc_idx]
+
+    def score_bm25(self, terms, candidates) -> dict[int, float]:
+        return self._index.scores(terms, candidates, idf_mode=self._idf_mode)
+
+    def candidates(
+        self,
+        mailbox: str,
+        query_date: date | str,
+        target_date: date | None = None,
+    ) -> list[int]:
+        return self._candidates(
+            mailbox, query_date=_as_date(query_date), target_date=target_date
+        )
 
     def _make_snippet(self, value: str) -> str:
         flat = " ".join(value.split())
