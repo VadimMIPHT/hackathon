@@ -1,0 +1,100 @@
+{
+  "archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+  "queries": [
+    {
+      "query_id": "local-return-01",
+      "query": "Найди уведомление о заявке покупателя на возврат за 12 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-13",
+      "labels": {
+        "L-fd1782e65d765cd51fc1": 1,
+        "L-057e2f6de4506d176bf4": 0,
+        "L-088d0e72b918cf1f0558": 0,
+        "L-08cadb8a14cf7b63c665": 0
+      }
+    },
+    {
+      "query_id": "local-return-02",
+      "query": "Покажи, кто попросил вернуть покупку 13 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-14",
+      "labels": {
+        "L-150d346c8742000fce09": 1,
+        "L-027ea8e27166025b8a10": 0,
+        "L-033f13df70d7ca25b511": 0,
+        "L-03789faef15adb966c66": 0
+      }
+    },
+    {
+      "query_id": "local-return-03",
+      "query": "Какие письма с запросом на возврат товара пришли 14 марта 2028 года?",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-15",
+      "labels": {
+        "L-0fc31b388eb3503a05c3": 1,
+        "L-0175eba7dc89f8852c2f": 0,
+        "L-01cafc0adf35c430caae": 0,
+        "L-05087c404d3f7ef40762": 0
+      }
+    },
+    {
+      "query_id": "local-return-04",
+      "query": "Покажи сообщения, где покупатель хочет вернуть товар, полученные 15 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-16",
+      "labels": {
+        "L-698ad9def00286eec296": 1,
+        "L-001d8f79b9d266777cf0": 0,
+        "L-05a073701a3d09167ae7": 0,
+        "L-0c15d4e05e619a997bef": 0
+      }
+    },
+    {
+      "query_id": "local-return-05",
+      "query": "Найди письмо, где клиент подал заявку вернуть покупку, за 19 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-20",
+      "labels": {
+        "L-34462d09e1b5e6555054": 1,
+        "L-0b54108df328b2599e2c": 0,
+        "L-114bf20c09fcb481f81a": 0,
+        "L-271ebb50b6680a937265": 0
+      }
+    },
+    {
+      "query_id": "local-return-06",
+      "query": "Покажи заявки покупателей на возврат, полученные 20 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-21",
+      "labels": {
+        "L-5bfcb1c95efbb3ba33f4": 1,
+        "L-129b33116426ffaaf907": 0,
+        "L-13a5754d1f5b1c0ee17d": 0,
+        "L-57eb1c8ee7c042869c58": 0
+      }
+    },
+    {
+      "query_id": "local-return-07",
+      "query": "Кто запрашивал возврат товара? Нужны письма за 21 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-22",
+      "labels": {
+        "L-8b022085071f8445fbe1": 1,
+        "L-11447aae2a64fc51d875": 0,
+        "L-142c5037f4e31f5a34aa": 0,
+        "L-1770cc4c5a6bb411ac9e": 0
+      }
+    },
+    {
+      "query_id": "local-return-08",
+      "query": "Найди, кто просил оформить возврат 22 марта 2028 года.",
+      "synthetic_user": "box-84dd8d9560e6",
+      "query_date": "2028-03-23",
+      "labels": {
+        "L-b6fda4fa6acbde9212e8": 1,
+        "L-2f3e44e2f0bbf2642f9c": 0,
+        "L-508c5a5dcae928f549e5": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+__pycache__/
+.venv/
+data/
+runs/
+
+/splits/mailboxes.json
+
+/.venv-catboost/
+/models/
