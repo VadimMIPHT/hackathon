@@ -125,7 +125,9 @@ def main() -> None:
     print(f"\n{'вариант':<24} {'R@10':>6} {'nDCG@10':>8} {'MRR@10':>7} {'p50':>7} {'p99':>7}")
     results = {}
     for name, config in configs:
-        searcher = HybridSearcher(documents, dense, engine=engine, config=config)
+        # Важно: bm25-варианты не должны получать dense, иначе это уже гибрид.
+        variant_dense = dense if name.startswith("hybrid") else None
+        searcher = HybridSearcher(documents, variant_dense, engine=engine, config=config)
         result = run_variant(searcher, queries, qrels, args.top_k)
         results[name] = result
         print(
