@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#231d38">
+  <title>Письмо · Умный поиск</title>
+  <link rel="stylesheet" href="./assets/fonts.css">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="workspace">
+    <aside class="sidebar" id="sidebar" aria-label="Почтовые папки">
+      <div class="brand"><span class="brand-icon"><span class="icon" aria-hidden="true">mail</span></span>Письмо<span class="brand-period">.</span></div>
+      <label class="account">
+        <span class="account-mark" aria-hidden="true" id="account-mark">АК</span>
+        <span class="account-info"><small>Почтовый ящик</small><select id="mailbox" aria-label="Почтовый ящик"><option value="anna">Анна Королёва</option></select></span>
+        <span class="icon" aria-hidden="true">expand_more</span>
+      </label>
+      <nav class="folders" aria-label="Папки">
+        <span class="side-label">ПАПКИ</span>
+        <button class="folder active" data-folder="inbox" aria-current="page"><span class="icon" aria-hidden="true">inbox</span>Входящие<span id="unread-count" class="unread-count"></span></button>
+        <button class="folder" data-folder="starred"><span class="icon" aria-hidden="true">star</span>Избранное</button>
+        <button class="folder" data-folder="archive"><span class="icon" aria-hidden="true">archive</span>Архив</button>
+        <button class="folder" data-folder="reminders" hidden><span class="icon text-icon" aria-hidden="true">◷</span>Напоминания<span id="reminder-count" class="unread-count"></span></button>
+      </nav>
+      <div class="side-footer"><span class="status-dot"></span><span id="source-label">Демо-данные</span><small>VK Tech Hackathon</small></div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <button type="button" id="menu" class="icon-button menu" aria-label="Открыть папки" aria-controls="sidebar" aria-expanded="false"><span class="icon" aria-hidden="true">menu</span></button>
+        <div class="breadcrumbs">Почта <span class="icon" aria-hidden="true">chevron_right</span> <strong id="breadcrumb">Входящие</strong></div>
+        <span class="context" id="today"></span>
+        <label class="as-of" id="snapshot" hidden>Письма на дату <input id="snapshot-date" type="date" aria-label="Письма на дату" min="1900-01-01" max="2099-12-31"></label>
+      </header>
+      <section class="search-area" aria-labelledby="search-heading">
+        <div class="search-head">
+          <div><h1 id="search-heading">Умный поиск</h1><p id="search-description">Опишите письмо своими словами.</p></div>
+          <div class="mode" role="group" aria-label="Поиск или ассистент">
+            <button type="button" data-view="search" aria-pressed="true">Поиск</button>
+            <button type="button" data-view="ask" aria-pressed="false"><span class="icon" aria-hidden="true">auto_awesome</span>Спросить</button>
+          </div>
+        </div>
+        <form id="search-form" role="search">
+          <div class="search-input">
+            <span class="icon" aria-hidden="true">search</span>
+            <input id="query" type="search" aria-label="Запрос для поиска писем" placeholder="Например, покупатель хочет вернуть деньги" maxlength="500" autocomplete="off">
+            <kbd aria-hidden="true" title="Быстрый переход к поиску">Ctrl K</kbd>
+            <button type="button" class="icon-button" id="clear" aria-label="Очистить поиск" hidden><span class="icon" aria-hidden="true">close</span></button>
+          </div>
+          <button type="button" class="filter-toggle" id="filter-toggle" aria-haspopup="dialog">Фильтры</button>
+          <button type="submit" class="find" id="submit-query">Найти</button>
+        </form>
+        <div class="active-filters" id="active-filters" aria-label="Применённые фильтры" hidden></div>
+        <div class="suggestions" id="suggestions" aria-label="Примеры запросов"><span>Попробуйте</span></div>
+      </section>
+      <section class="mail-workspace" aria-label="Список писем и просмотр">
+        <div class="list-pane">
+          <header class="list-head">
+            <div><h2 id="list-title">Входящие</h2><small id="list-count" role="status"></small></div>
+            <div class="list-actions">
+              <span id="date-filter" class="date-filter" hidden><span class="icon" aria-hidden="true">calendar_today</span><span></span></span>
+              <button type="button" class="show-answer" id="show-answer" hidden>К ответу</button>
+            </div>
+          </header>
+          <div class="messages" id="messages" role="region" aria-label="Письма" tabindex="0"></div>
+        </div>
+        <article class="reader" id="reader" aria-label="Просмотр письма">
+          <header class="reader-tools">
+            <button type="button" class="back" id="back"><span class="icon" aria-hidden="true">arrow_back</span>К письмам</button>
+            <span class="reader-position" id="position">Письмо</span>
+            <div class="tools" id="letter-tools">
+              <button type="button" class="icon-button" id="star" title="В избранное" aria-label="В избранное" aria-pressed="false"><span class="icon" aria-hidden="true">star</span></button>
+              <button type="button" class="icon-button" id="read-toggle" title="Отметить непрочитанным" aria-label="Отметить непрочитанным"><span class="icon" aria-hidden="true">mark_email_unread</span></button>
+              <button type="button" class="icon-button" id="archive" title="В архив" aria-label="В архив"><span class="icon" aria-hidden="true">archive</span></button>
+              <button type="button" class="icon-button" id="remind" title="Напомнить о письме" aria-label="Напомнить о письме" hidden><span class="icon text-icon" aria-hidden="true">◷</span></button>
+            </div>
+          </header>
+          <div class="reader-body" id="letter" role="region" aria-label="Содержание письма" tabindex="0"></div>
+        </article>
+        <article class="answer-pane" id="answer-pane" aria-labelledby="answer-title">
+          <header class="reader-tools answer-head">
+            <button type="button" class="back" id="answer-back"><span class="icon" aria-hidden="true">arrow_back</span>К письмам</button>
+            <h2 id="answer-title">Ответ по письмам</h2>
+          </header>
+          <div class="reader-body answer-body" id="answer" role="region" aria-label="Ответ и источники" tabindex="0"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <dialog id="filters-dialog" aria-labelledby="filters-title">
+    <form id="filters-form" class="dialog-form">
+      <h2 id="filters-title">Фильтры поиска</h2>
+      <label>Отправитель <input name="sender" maxlength="150" placeholder="Имя или адрес"></label>
+      <div class="date-inputs">
+        <label>С <input type="date" name="from" min="1900-01-01" max="2099-12-31"></label>
+        <label>По <input type="date" name="to" min="1900-01-01" max="2099-12-31"></label>
+      </div>
+      <div class="mode" id="ranking-mode" role="group" aria-label="Как искать">
+        <button type="button" data-mode="semantic" aria-pressed="true" title="В демо поиск по смыслу использует словарь выражений">По смыслу</button>
+        <button type="button" data-mode="lexical" aria-pressed="false">По словам</button>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" data-close="filters-dialog">Отмена</button>
+        <button type="button" class="secondary" id="reset-filters">Сбросить</button>
+        <button type="submit" class="find">Применить</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="reminder-dialog" aria-labelledby="reminder-title">
+    <form id="reminder-form" class="dialog-form">
+      <h2 id="reminder-title">Напомнить о письме</h2>
+      <p id="reminder-subject"></p>
+      <div class="reminder-presets">
+        <button type="button" class="secondary" data-preset="5">Через 5 минут</button>
+        <button type="button" class="secondary" data-preset="60">Через час</button>
+        <button type="button" class="secondary" data-preset="tomorrow">Завтра в 09:00</button>
+      </div>
+      <label>Дата и время <input type="datetime-local" id="reminder-time" required></label>
+      <small id="reminder-zone"></small>
+      <p class="form-error" id="reminder-error" role="alert" hidden></p>
+      <div class="dialog-actions reminder-actions">
+        <button type="button" class="secondary" id="remove-reminder" hidden>Удалить напоминание</button>
+        <button type="button" class="secondary" data-close="reminder-dialog">Закрыть</button>
+        <button type="submit" class="find">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+  <div class="notice" id="notice" hidden></div>
+  <div id="live" class="sr-only" role="status" aria-live="polite"></div>
+  <noscript>Для просмотра писем включите JavaScript.</noscript>
+</body>
+</html>
