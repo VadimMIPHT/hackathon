@@ -60,6 +60,38 @@ class TestDates(unittest.TestCase):
         self.assertIsNone(parsed.date)
 
 
+class TestDateRanges(unittest.TestCase):
+    QD = date(2028, 10, 11)
+
+    def test_from_to_different_months(self) -> None:
+        parsed = extract_date("с 30 января по 2 февраля 2028", self.QD)
+        self.assertEqual(parsed.date, date(2028, 1, 30))
+        self.assertEqual(parsed.end_date, date(2028, 2, 2))
+
+    def test_or_same_month(self) -> None:
+        parsed = extract_date("письма за 9 или 10 октября 2028", self.QD)
+        self.assertEqual(parsed.bounds(), (date(2028, 10, 9), date(2028, 10, 10)))
+
+    def test_shared_month_range(self) -> None:
+        parsed = extract_date("с 7 по 10 октября 2028 года", self.QD)
+        self.assertEqual(parsed.bounds(), (date(2028, 10, 7), date(2028, 10, 10)))
+
+    def test_dash_range(self) -> None:
+        parsed = extract_date("25–27 сентября 2028", self.QD)
+        self.assertEqual(parsed.bounds(), (date(2028, 9, 25), date(2028, 9, 27)))
+
+    def test_last_day_of_month(self) -> None:
+        parsed = extract_date("в последний день января 2028", self.QD)
+        self.assertEqual(parsed.date, date(2028, 1, 31))
+
+    def test_nakanune(self) -> None:
+        self.assertEqual(extract_date("пришли накануне", self.QD).date, date(2028, 10, 10))
+
+    def test_year_suffix_go(self) -> None:
+        parsed = extract_date("за 1 октября 2028-го", self.QD)
+        self.assertEqual(parsed.date, date(2028, 10, 1))
+
+
 class TestText(unittest.TestCase):
     def test_normalize(self) -> None:
         self.assertEqual(normalize("  Ёлка   <b>и</b>  КОТ  "), "елка и кот")
@@ -90,6 +122,12 @@ class TestText(unittest.TestCase):
     def test_stemmer_keeps_short_words(self) -> None:
         stemmer = RussianStemmer()
         self.assertEqual(stemmer.stem("чек"), "чек")
+
+    def test_query_synonyms_bridge_domain_words(self) -> None:
+        self.assertIn("отклон", query_terms("отказ в оплате"))
+        self.assertIn("отклон", query_terms("оплата не была одобрена"))
+        self.assertIn("погруж", query_terms("контейнеры погрузили"))
+        self.assertIn("ошибк", query_terms("сбои модуля"))
 
     def test_split_subject_body(self) -> None:
         subject, body = split_subject_body("Тема: Операция отклонена\n\nПлатёж не прошёл.")
@@ -154,6 +192,17 @@ class TestEngine(unittest.TestCase):
         )
         self.assertEqual(result.hits[0].doc_id, "d2")
 
+    def test_date_range_filter_keeps_both_days(self) -> None:
+        engine = SearchEngine(
+            [
+                doc("r1", text="Тема: Письмо\n\nТекст.", doc_date="2028-09-15"),
+                doc("r2", text="Тема: Письмо\n\nТекст.", doc_date="2028-09-16"),
+                doc("r3", text="Тема: Письмо\n\nТекст.", doc_date="2028-09-17"),
+            ]
+        )
+        result = engine.search("письмо 15 и 16 сентября 2028", "box-a", "2028-09-18", top_k=10)
+        self.assertEqual({hit.doc_id for hit in result.hits}, {"r1", "r2"})
+
     def test_subject_boost_smoke(self) -> None:
         engine = SearchEngine(
             [doc("s1", text="Тема: Возврат средств\n\nПодробности.", doc_date="2028-09-15")],
@@ -165,6 +214,18 @@ class TestEngine(unittest.TestCase):
         engine = SearchEngine([doc("n1", text="письмо без даты", doc_date=None)])
         result = engine.search("письмо вчера", "box-a", "2028-09-16", top_k=10)
         self.assertEqual(result.hits, ())
+
+
+class TestQrels(unittest.TestCase):
+    def test_zero_relevance_is_ignored(self) -> None:
+        import json
+        import tempfile
+
+        with tempfile.NamedTemporaryFile("w", suffix=".jsonl", delete=False) as handle:
+            handle.write(json.dumps({"query_id": "q", "doc_id": "d1", "relevance": 1}) + "\n")
+            handle.write(json.dumps({"query_id": "q", "doc_id": "d2", "relevance": 0}) + "\n")
+            path = handle.name
+        self.assertEqual(load_qrels(path), {"q": {"d1"}})
 
 
 class TestDevSet(unittest.TestCase):

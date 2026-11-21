@@ -41,12 +41,29 @@ QUERY_FILLER = frozenset(
     покажи покажите найди найдите выведи выведите перечисли перечислите
     письма письмо письмах письмам письмами письме писем
     полученные полученных полученным полученными получен получена получено
-    вчера сегодня позавчера
+    вчера сегодня позавчера накануне
+    года году год включительно
     мне нужно надо пожалуйста
     """.split()
 )
 
 _VOWELS = frozenset("аеиоуыэюя")
+
+# Доменные синонимы: запрос и письмо называют одно и то же разными словами
+# («отказ» vs «операция отклонена», «погрузили» vs «контейнер погружен»).
+# Расширяем только запрос, индекс не трогаем.
+QUERY_SYNONYMS: dict[str, tuple[str, ...]] = {
+    "отказ": ("отклон",),
+    "отклон": ("отказ",),
+    "сбо": ("ошибк",),
+    "ошибк": ("сбо",),
+    "погруз": ("погруж",),
+    "погруж": ("погруз",),
+    "выгруз": ("выгруж",),
+    "выгруж": ("выгруз",),
+    "прибыт": ("прибыл",),
+    "прибыл": ("прибыт",),
+}
 
 # «Мягкий» префикс: кроме полного стема индексируем первые 6 символов
 # слова, если слово длиннее 7 символов. Snowball иногда разводит формы
@@ -296,11 +313,17 @@ def query_terms(
         if token in STOPWORDS or token in QUERY_FILLER or len(token) < 2:
             continue
         stem = stemmer.stem(token)
-        candidates = [stem]
+        candidates = [stem, *QUERY_SYNONYMS.get(stem, ())]
         if soft_prefix_len and len(token) >= soft_prefix_min:
             candidates.append(token[:soft_prefix_len])
         for candidate in candidates:
             if candidate not in seen:
                 seen.add(candidate)
                 result.append(candidate)
+
+    # «оплата не была одобрена» — это про отклонённый платёж, а не про успешный.
+    if "одобр" in seen and re.search(r"\bне\b", value):
+        if "отклон" not in seen:
+            seen.add("отклон")
+            result.append("отклон")
     return result

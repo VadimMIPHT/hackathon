@@ -1,0 +1,11 @@
+{
+  "documents": 16376,
+  "queries": 139,
+  "qrels": 3786,
+  "sha256": {
+    "README.md": "be81bac9f64c34d036f1d4c1debd080c6ff4a1cb504b0ea5d00fbedb24c0e1d1",
+    "documents.jsonl": "06feb4791a52faeb777f1a8d4c22d99efd26a279943a19bdfbd0b14bc9c8daa5",
+    "qrels_dev.jsonl": "63a1366dc74a98b9e5a0113abe03977631b834634ea26d6608f2ef6d53a1bc81",
+    "queries_dev.jsonl": "a5e2c5543fe88808c1c97a81203d8a891ce8ce6135463064e63a5f9c2e0bac6e"
+  }
+}

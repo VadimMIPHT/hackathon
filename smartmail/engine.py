@@ -30,6 +30,7 @@ class SearchResult:
     candidates: int
     hits: tuple[SearchHit, ...]
     elapsed_ms: float
+    target_end: date | None = None
 
 
 def _as_date(value: date | str) -> date:
@@ -109,10 +110,10 @@ class SearchEngine:
         self,
         mailbox: str,
         query_date: date | str,
-        target_date: date | None = None,
+        target_range: tuple[date, date] | None = None,
     ) -> list[int]:
         return self._candidates(
-            mailbox, query_date=_as_date(query_date), target_date=target_date
+            mailbox, query_date=_as_date(query_date), target_range=target_range
         )
 
     def _make_snippet(self, value: str) -> str:
@@ -150,10 +151,11 @@ class SearchEngine:
             else ()
         )
 
+        target_range = parsed.bounds() if use_date_filter else None
         candidates = self._candidates(
             mailbox,
             query_date=query_date,
-            target_date=parsed.date if use_date_filter else None,
+            target_range=target_range,
         )
 
         if terms and candidates:
@@ -190,6 +192,7 @@ class SearchEngine:
             candidates=len(candidates),
             hits=hits,
             elapsed_ms=elapsed_ms,
+            target_end=parsed.end_date,
         )
 
     def _candidates(
@@ -197,24 +200,27 @@ class SearchEngine:
         mailbox: str,
         *,
         query_date: date,
-        target_date: date | None,
+        target_range: tuple[date, date] | None,
     ) -> list[int]:
         """Письма ящика, доступные на дату запроса.
 
         Письма с известной датой позже даты запроса недоступны по условию.
         Письма с неизвестной датой (doc_dt = null) не могут подтвердить
-        попадание в конкретный день, поэтому при точном фильтре отбрасываются.
+        попадание в конкретный день/диапазон, поэтому при точном фильтре
+        отбрасываются.
         """
         result: list[int] = []
         for doc_idx in self._by_box.get(mailbox, []):
             doc_date = self._dates[doc_idx]
             if doc_date is None:
-                if target_date is None:
+                if target_range is None:
                     result.append(doc_idx)
                 continue
             if doc_date > query_date:
                 continue
-            if target_date is not None and doc_date != target_date:
-                continue
+            if target_range is not None:
+                start, end = target_range
+                if not (start <= doc_date <= end):
+                    continue
             result.append(doc_idx)
         return result

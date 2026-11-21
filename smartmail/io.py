@@ -70,5 +70,9 @@ def load_qrels(path: str | Path) -> dict[str, set[str]]:
     """query_id -> множество релевантных doc_id."""
     result: dict[str, set[str]] = {}
     for row in _read_jsonl(Path(path)):
+        # В расширенной разметке есть явные отрицательные пары (relevance: 0).
+        # В множество релевантных они попадать не должны.
+        if int(row.get("relevance", 1)) <= 0:
+            continue
         result.setdefault(row["query_id"], set()).add(row["doc_id"])
     return result

@@ -80,7 +80,7 @@ class HybridSearcher:
         terms = tuple(textmod.query_terms(body, self.engine._stemmer)) if use_text else ()
 
         candidates = self.engine.candidates(
-            mailbox, query_date, parsed.date if use_date_filter else None
+            mailbox, query_date, parsed.bounds() if use_date_filter else None
         )
 
         sender = self._detect_sender(body) if self.config.sender_filter else None
@@ -130,6 +130,7 @@ class HybridSearcher:
             candidates=len(candidates),
             hits=hits,
             elapsed_ms=(perf_counter() - started) * 1000.0,
+            target_end=parsed.end_date,
         )
 
     # ------------------------------------------------------------------ fusion
