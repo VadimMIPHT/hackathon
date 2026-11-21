@@ -1,0 +1,32 @@
+{"group":"search","expected":"search","query":"Найди уведомления о новых заказах за 1 декабря."}
+{"group":"search","expected":"search","query":"Покажи все письма от службы поддержки за прошлую неделю."}
+{"group":"search","expected":"search","query":"акт сверки ноябрь"}
+{"group":"search","expected":"search","query":"Открой последнее письмо из бухгалтерии."}
+{"group":"search","expected":"search","query":"Найди письма, где сказано, когда привезут заказ."}
+{"group":"search","expected":"search","query":"Покажи письма со статусом возврата."}
+{"group":"search","expected":"search","query":"Письма с темой «Как оплатить заказ?»"}
+{"group":"search","expected":"search","query":"Отфильтруй счета с вложениями за ноябрь."}
+{"group":"question","expected":"agent","query":"Когда курьер привезёт заказ?"}
+{"group":"question","expected":"agent","query":"Деньги уже вернулись на карту"}
+{"group":"question","expected":"agent","query":"Покажи статус возврата."}
+{"group":"question","expected":"agent","query":"Сколько заказов оплатили за вчера?"}
+{"group":"question","expected":"agent","query":"Коротко по последнему письму от поддержки"}
+{"group":"question","expected":"agent","query":"Подготовь вежливый ответ на последнее письмо бухгалтера."}
+{"group":"question","expected":"agent","query":"Сравни условия из двух последних писем поставщика."}
+{"group":"question","expected":"agent","query":"Какую дату доставки в итоге согласовали"}
+{"group":"mixed","expected":"agent","query":"Найди письма. А что изменилось?"}
+{"group":"mixed","expected":"agent","query":"Найди письма. А когда привезут заказ?"}
+{"group":"mixed","expected":"agent","query":"Найди чек и напомни завтра в десять проверить оплату."}
+{"group":"mixed","expected":"agent","query":"Найди последние письма по возврату и скажи что там поменялось"}
+{"group":"mixed","expected":"agent","query":"Покажи счета от поставщика, какая там итоговая сумма?"}
+{"group":"mixed","expected":"agent","query":"Найди переписку о переносе встречи и выпиши, кто подтвердил новое время."}
+{"group":"mixed","expected":"agent","query":"Выведи уведомления о заказах и посчитай, сколько из них отменено."}
+{"group":"mixed","expected":"agent","query":"Найди последнее письмо, если ответа ещё нет, подготовь черновик напоминания."}
+{"group":"followup","expected":"agent","query":"А что случилось после одобрения?","previous":"Найди письма по возврату заказа № 123456"}
+{"group":"followup","expected":"agent","query":"А они подтвердили перечисление","previous":"Покажи переписку по возврату денег"}
+{"group":"followup","expected":"agent","query":"Тогда напомни завтра утром проверить этот статус.","previous":"Найди письма о просроченной доставке"}
+{"group":"followup","expected":"agent","query":"А какая из этих дат актуальная","previous":"Покажи письма о переносе встречи"}
+{"group":"followup","expected":"search","query":"А теперь только письма со вчерашней датой.","previous":"Найди письма о новых заказах"}
+{"group":"followup","expected":"search","query":"Покажи из них только письма от склада.","previous":"Письма о переносе доставки"}
+{"group":"followup","expected":"search","query":"Открой самое свежее из этих писем.","previous":"Найди счета за ноябрь"}
+{"group":"followup","expected":"search","query":"А есть письма по заказу № 789012?","previous":"Найди письма по заказу № 123456"}

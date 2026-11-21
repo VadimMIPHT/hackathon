@@ -9,14 +9,17 @@ from contextlib import closing
 from datetime import date, datetime, timedelta, timezone
 from email.utils import parseaddr
 from functools import partial
+from http.client import HTTPConnection
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from socketserver import ThreadingMixIn, UnixStreamServer
 from threading import Lock
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, urlencode, urlsplit
 
+from mail_search.assistant import MailAssistant
 from mail_search.dataset import Dataset, Document, Query, load_archive
 from mail_search.reranker_data import documents_by_mailbox
-from mail_search.retrieval import BM25, day_from_query, eligible_indices, fields, searchable_text
+from mail_search.retrieval import BM25, CALENDAR_DATE, YESTERDAY, day_from_query, eligible_indices, fields, searchable_text
 
 LOGGER = logging.getLogger(__name__)
 SENDER_HEADER = re.compile(r"\A\s*(?:от|отправитель)[ \t]*:[ \t]*([^\r\n]*)\r?\n", re.IGNORECASE)
@@ -25,6 +28,14 @@ ARCHIVE_NAME = "mipt_mail_search_participants.zip"
 PROTOCOL = PROJECT_ROOT / "configs" / "final-test-protocol.json"
 PREVIEW_CHARS = 180
 TOP_K = 50
+
+
+class ThreadingUnixHTTPServer(ThreadingMixIn, UnixStreamServer):
+    daemon_threads = True
+
+
+class RemoteError(Exception):
+    pass
 
 
 def present(doc: Document, *, full: bool = False) -> dict:
@@ -95,13 +106,18 @@ class NeuralRanker:
 
 
 class ArchiveSearch:
-    def __init__(self, dataset: Dataset, neural: NeuralRanker | None, reminders_db: Path) -> None:
+    def __init__(
+        self, dataset: Dataset, neural: NeuralRanker | None, reminders_db: Path,
+        openrouter_key_file: Path | None = None, assistant_limit: int = 20, *,
+        use_openrouter_env: bool = False, upstream_port: int | None = None,
+    ) -> None:
         self.dataset = dataset
         boxes = documents_by_mailbox(dataset)
         self.boxes = {box: sorted(docs, key=lambda doc: (doc.received or date.min, doc.doc_id), reverse=True)
                       for box, docs in sorted(boxes.items())}
         self.lexical = {box: BM25(docs) for box, docs in self.boxes.items()}
         self.neural = neural
+        self.upstream_port = upstream_port
         self.reminders_db = reminders_db
         reminders_db.parent.mkdir(parents=True, exist_ok=True)
         with closing(sqlite3.connect(reminders_db)) as connection, connection:
@@ -110,6 +126,7 @@ class ArchiveSearch:
                 "dataset TEXT NOT NULL, mailbox TEXT NOT NULL, message_id TEXT NOT NULL, "
                 "due_at TEXT NOT NULL, PRIMARY KEY (dataset, mailbox, message_id))"
             )
+        self.assistant = MailAssistant(reminders_db, openrouter_key_file, assistant_limit, use_env=use_openrouter_env)
         self.profiles = {}
         for position, (box, docs) in enumerate(self.boxes.items(), start=1):
             sample = [query for query in dataset.queries.values() if query.mailbox == box]
@@ -125,7 +142,19 @@ class ArchiveSearch:
         docs = self.boxes[mailbox]
         return {"messages": [present(docs[i]) for i in eligible_indices(docs, query, use_query_day=False)]}
 
-    def search(self, request: dict) -> dict:
+    def upstream(self, method: str, path: str, payload: dict | None = None) -> dict:
+        body = json.dumps(payload, ensure_ascii=False).encode() if payload is not None else None
+        try:
+            with closing(HTTPConnection("127.0.0.1", self.upstream_port, timeout=60)) as connection:
+                connection.request(method, path, body, {"Content-Type": "application/json"})
+                response = connection.getresponse()
+                if response.status != 200:
+                    raise RemoteError("H200 HTTP request failed")
+                return json.loads(response.read(2_000_000))
+        except (OSError, ValueError) as error:
+            raise RemoteError("Could not connect to H200") from error
+
+    def search(self, request: dict, *, day_text: str | None = None) -> dict:
         mailbox = request["mailbox"]
         text = request["query"]
         mode = request["mode"]
@@ -135,8 +164,9 @@ class ArchiveSearch:
             raise ValueError("Unknown search mode")
         as_of = date.fromisoformat(request.get("asOf", self.profiles[mailbox]["asOf"]))
         query = Query("web", mailbox, text.strip(), as_of)
+        date_query = query if day_text is None else Query("web", mailbox, day_text, as_of)
         docs = self.boxes[mailbox]
-        eligible = eligible_indices(docs, query, use_query_day=True)
+        eligible = eligible_indices(docs, date_query, use_query_day=True)
         filters = request.get("filters", {})
         ids = request.get("orderIds", [])
         if not isinstance(filters, dict) or not isinstance(ids, list) or len(ids) > 16:
@@ -144,7 +174,7 @@ class ArchiveSearch:
         sender = filters.get("sender", "")
         if not isinstance(sender, str) or len(sender) > 150:
             raise ValueError("Invalid sender")
-        if any(not isinstance(value, str) or not re.fullmatch(r"[0-9]{2,16}", value) for value in ids):
+        if any(not isinstance(value, str) or not re.fullmatch(r"[0-9]{2,16}|SYN-[0-9a-f]{6,24}", value, re.I) for value in ids):
             raise ValueError("Invalid order IDs")
         start = date.fromisoformat(filters["from"]) if filters.get("from") else None
         end = date.fromisoformat(filters["to"]) if filters.get("to") else None
@@ -162,9 +192,21 @@ class ArchiveSearch:
                         and initials in header[1].casefold().replace("ё", "е")]
         if ids:
             alternatives = "|".join(ids)
-            exact = re.compile(rf"(?<!\d)(?:{alternatives})(?!\d)")
+            exact = re.compile(rf"(?<!\w)(?:{alternatives})(?!\w)", re.I)
             eligible = [i for i in eligible if exact.search(docs[i].text)]
-        if not query.text:
+        archive_reference = any(value.upper().startswith("SYN-") for value in ids)
+        if self.upstream_port and query.text and mode == "semantic" and not archive_reference:
+            retrieval_text = query.text
+            if day_text is not None:
+                # Preserve a date in the user's query. A tool rewrite cannot introduce a date filter.
+                retrieval_text = day_text if day_from_query(date_query) else YESTERDAY.sub(
+                    "", CALENDAR_DATE.sub("", retrieval_text),
+                ).strip() or day_text
+            return self.upstream("POST", "/api/search", {
+                "mailbox": mailbox, "query": retrieval_text, "mode": mode,
+                "asOf": as_of.isoformat(), "filters": filters, "orderIds": ids,
+            })
+        if not query.text or archive_reference and self.upstream_port:
             ranked_ids = [docs[i].doc_id for i in eligible[:TOP_K]]
         elif mode == "semantic":
             if self.neural is None:
@@ -172,15 +214,51 @@ class ArchiveSearch:
             ranked_ids = self.neural.search(query, docs, eligible)
         else:
             ranked_ids = self.lexical[mailbox].rank(query.text, eligible, TOP_K)
-        day = day_from_query(query)
+        day = day_from_query(date_query)
         return {
             "ids": ranked_ids, "date": day.isoformat() if day else None,
             "messages": [present(self.dataset.documents[doc_id]) for doc_id in ranked_ids],
         }
 
+    def ask(self, request: dict) -> dict:
+        question, mailbox, query = request["question"], request["mailbox"], request["query"]
+        if not isinstance(question, str) or not 0 < len(question.strip()) <= 500:
+            raise ValueError("Invalid question")
+        if mailbox not in self.boxes or not isinstance(query, str) or len(query) > 500:
+            raise ValueError("Invalid search scope")
+        if request.get("autoRoute", "") not in ("", "search", "agent"):
+            raise ValueError("Invalid automatic route")
+        context = request.get("context", [])
+        source_ids = request.get("sourceIds", [])
+        order_ids = request.get("orderIds", [])
+        if not isinstance(context, list) or len(context) > 2 or any(
+            not isinstance(text, str) or len(text) > 500 for text in context
+        ):
+            raise ValueError("Invalid conversation context")
+        if not isinstance(source_ids, list) or len(source_ids) > TOP_K or not all(isinstance(id_, str) for id_ in source_ids):
+            raise ValueError("Invalid conversation scope")
+        if not isinstance(order_ids, list) or len(order_ids) > 16 or not all(
+            isinstance(id_, str) and re.fullmatch(r"[0-9]{2,16}|SYN-[0-9a-f]{6,24}", id_, re.I) for id_ in order_ids
+        ):
+            raise ValueError("Invalid reference")
+        if source_ids:
+            as_of = date.fromisoformat(request.get("asOf", self.profiles[mailbox]["asOf"]))
+            docs = [self.dataset.documents[id_] for id_ in dict.fromkeys(source_ids)]
+            if any(doc.mailbox != mailbox or doc.received and doc.received > as_of for doc in docs):
+                raise ValueError("Message is outside conversation scope")
+            scoped_result = {"ids": [doc.doc_id for doc in docs], "date": None, "messages": [present(doc) for doc in docs]}
+
+        return self.assistant.answer(
+            question.strip(), request,
+            lambda params, day_text: scoped_result if source_ids else self.search(params, day_text=day_text),
+            lambda doc_id: present(self.dataset.documents[doc_id], full=True),
+        )
+
     def reminders(self, mailbox: str) -> dict:
         if mailbox not in self.boxes:
             raise KeyError("Unknown mailbox")
+        if self.upstream_port:
+            return self.upstream("GET", "/api/reminders?" + urlencode({"mailbox": mailbox}))
         with closing(sqlite3.connect(self.reminders_db)) as connection:
             rows = connection.execute(
                 "SELECT message_id, due_at FROM reminders WHERE dataset = ? AND mailbox = ? "
@@ -195,6 +273,8 @@ class ArchiveSearch:
         mailbox, doc_id = request["mailbox"], request["messageId"]
         if self.dataset.documents[doc_id].mailbox != mailbox:
             raise KeyError("Unknown message")
+        if self.upstream_port:
+            return self.upstream("DELETE" if remove else "PUT", "/api/reminders", request)
         key = (self.dataset.archive_sha256, mailbox, doc_id)
         with closing(sqlite3.connect(self.reminders_db)) as connection, connection:
             if remove:
@@ -256,7 +336,8 @@ class Handler(SimpleHTTPRequestHandler):
                 case "/api/mailboxes":
                     payload = {
                         "mailboxes": list(self.app.profiles.values()),
-                        "engine": "e5-bge" if self.app.neural else "bm25",
+                        "engine": "e5-bge" if self.app.neural or self.app.upstream_port else "bm25",
+                        "assistant": True,
                     }
                 case "/api/messages":
                     mailbox = params["mailbox"][0]
@@ -275,10 +356,16 @@ class Handler(SimpleHTTPRequestHandler):
         except (KeyError, ValueError):
             self.reply(400, {"error": "Invalid mailbox, date or message"})
             return
+        except RemoteError:
+            self.reply(503, {"error": "H200 service is unavailable"})
+            return
         self.reply(200, payload)
 
     def do_POST(self) -> None:
-        self.mutate("/api/search", self.app.search)
+        if self.path == "/api/ask":
+            self.mutate("/api/ask", self.app.ask)
+        else:
+            self.mutate("/api/search", self.app.search)
 
     def do_PUT(self) -> None:
         self.mutate("/api/reminders", partial(self.app.set_reminder, remove=False))
@@ -298,7 +385,8 @@ class Handler(SimpleHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if self.headers.get_content_type() != "application/json" or not 0 < length <= 4096:
+            limit = 12288 if endpoint == "/api/ask" else 4096
+            if self.headers.get_content_type() != "application/json" or not 0 < length <= limit:
                 raise ValueError("Invalid request")
             request = json.loads(self.rfile.read(length))
             if not isinstance(request, dict):
@@ -306,6 +394,9 @@ class Handler(SimpleHTTPRequestHandler):
             result = action(request)
         except (AttributeError, KeyError, TypeError, ValueError):
             self.reply(400, {"error": "Invalid request"})
+            return
+        except RemoteError:
+            self.reply(503, {"error": "H200 service is unavailable"})
             return
         except Exception:
             LOGGER.exception("Local API request failed")
@@ -319,8 +410,13 @@ def main() -> None:
     parser.add_argument("--archive", type=Path, help=f"Organizer ZIP. Default: data/{ARCHIVE_NAME}")
     parser.add_argument("--dist", type=Path, default=PROJECT_ROOT / "sites" / "pismo" / "dist")
     parser.add_argument("--port", type=int, default=8940)
+    parser.add_argument("--unix-socket", type=Path, help="Bind a private Unix socket for SSH port forwarding")
     parser.add_argument("--reminders-db", type=Path, default=Path("runs/pismo/reminders.sqlite3"))
     parser.add_argument("--lexical-only", action="store_true")
+    parser.add_argument("--openrouter-key-file", type=Path, help="Owner-only file with the OpenRouter API key")
+    parser.add_argument("--openrouter-env", action="store_true", help="Use the OPENROUTER_API_KEY environment variable")
+    parser.add_argument("--assistant-limit", type=int, default=20, help="Total number of questions sent to OpenRouter")
+    parser.add_argument("--upstream-port", type=int, help="Use an SSH-forwarded H200 search/reminder API on localhost")
     for name in ("e5-model", "bge-model", "bge-weights"):
         parser.add_argument(f"--{name}", type=Path)
     args = parser.parse_args()
@@ -329,15 +425,33 @@ def main() -> None:
         parser.error(f"Archive not found at {archive}. Pass --archive /path/to/{ARCHIVE_NAME}.")
     if not (args.dist / "index.html").is_file():
         parser.error("--dist must point to the Sites dist folder")
-    if not args.lexical_only and not all((args.e5_model, args.bge_model, args.bge_weights)):
+    if args.assistant_limit < 0:
+        parser.error("--assistant-limit must be nonnegative")
+    if args.openrouter_env and args.openrouter_key_file:
+        parser.error("Select one OpenRouter key source")
+    if args.upstream_port and not (0 < args.upstream_port < 65536 and args.upstream_port != args.port):
+        parser.error("--upstream-port must be a different local TCP port")
+    if not (args.lexical_only or args.upstream_port or all((args.e5_model, args.bge_model, args.bge_weights))):
         parser.error("Supply --e5-model, --bge-model and --bge-weights, or select --lexical-only")
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     dataset = load_archive(archive)
-    neural = None if args.lexical_only else NeuralRanker(args)
-    app = ArchiveSearch(dataset, neural, args.reminders_db)
+    neural = None if args.lexical_only or args.upstream_port else NeuralRanker(args)
+    app = ArchiveSearch(
+        dataset, neural, args.reminders_db, args.openrouter_key_file, args.assistant_limit,
+        use_openrouter_env=args.openrouter_env, upstream_port=args.upstream_port,
+    )
     handler = partial(Handler, app=app, port=args.port, directory=str(args.dist.resolve()))
-    with ThreadingHTTPServer(("127.0.0.1", args.port), handler) as server:
+    if args.unix_socket:
+        socket_path = args.unix_socket.resolve()
+        if socket_path.parent.stat().st_mode & 0o077:
+            parser.error("The Unix socket directory must be private (chmod 700)")
+        server = ThreadingUnixHTTPServer(str(socket_path), handler)
+        socket_path.chmod(0o600)
+        LOGGER.info("Письмо is listening on a private Unix socket")
+    else:
+        server = ThreadingHTTPServer(("127.0.0.1", args.port), handler)
         LOGGER.info("Письмо is available at http://127.0.0.1:%d/", args.port)
+    with server:
         try:
             server.serve_forever()
         except KeyboardInterrupt:

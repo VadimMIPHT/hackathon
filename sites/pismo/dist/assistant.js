@@ -1,6 +1,24 @@
 import { normalize, words } from "./demo.js";
 
 const orderPattern = /(?:№\s*|(?:заказ[а-яё]*|рейс[а-яё]*|парти[а-яё]*)\s*#?\s*)(\d{2,16})(?!\d)/giu;
+const archiveReference = /\bSYN-[0-9a-f]{6,24}\b/giu;
+
+export function routeQuestion(query) {
+  const text = normalize(query).trim();
+  if (/(?:^|[^\p{L}])(?:напомни|черновик[аи]?|объясни|сравни|подытожь|резюмируй|сводк[уа]|хронологи[яюи])(?!\p{L})/u.test(text)
+      || /(?:подготовь|составь|напиши)\s+.{0,35}(?:ответ|письмо)/u.test(text)) return "ask";
+  const rows = /^(?:найди|покажи|выведи|перечисли|подбери)(?!\p{L})/u;
+  const question = /(?:^|[^\p{L}])(?:когда|почему|сколько|кто|что ответил\p{L}*|что изменил\p{L}*|есть ли|вернули ли|пришли ли|подтвердили ли|в каком статусе|какой статус)(?!\p{L})/u;
+  if (!rows.test(text)) return text.endsWith("?") || question.test(text) ? "ask" : "search";
+  if (!text.includes("?") && !question.test(text)) return "search";
+  const clauses = text.split(/[.!?;]\s+|,\s+(?:а\s+|и\s+)/u);
+  return clauses.slice(1).some(part => part.endsWith("?") || question.test(part)) ? "auto-ask" : "auto-search";
+}
+
+export function continuesSearch(query) {
+  const text = normalize(query).trim().replace(/^найди письма[.!?;,\s]+/u, "");
+  return /^(?:а\s|тогда\s|и\s+что\s|что изменил|напомни\s|подготовь\s|составь\s)|(?<!\p{L})по\s+(?:этим письмам|этому номеру)(?!\p{L})/u.test(text);
+}
 const addressPattern = /[\w.+-]+@[\w.-]+\.[a-z]{2,}/iu;
 const sendingPattern = /(?:^|\s)(?:от|отправитель)(?=\s|:)\s*:?\s*/iu;
 const intentPatterns = {
@@ -51,13 +69,15 @@ export function planQuestion(question, asOf, senderNames, filters) {
   return {
     query: query.trim(),
     filters: derived,
-    ids: [...new Set([...question.matchAll(orderPattern)].map(match => match[1]))],
+    ids: [...new Set([
+      ...[...question.matchAll(orderPattern)].map(match => match[1]), ...(question.match(archiveReference) ?? []),
+    ])],
   };
 }
 
 export function highlightIds(text, ids) {
   if (!ids.length) return [text];
-  const pattern = new RegExp("(?<!\\d)(" + ids.join("|") + ")(?!\\d)", "gu");
+  const pattern = new RegExp("(?<![\\p{L}\\p{N}])(" + ids.join("|") + ")(?![\\p{L}\\p{N}])", "giu");
   return text.split(pattern);
 }
 

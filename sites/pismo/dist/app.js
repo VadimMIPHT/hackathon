@@ -1,5 +1,5 @@
 import { demoMessages, demoSearch, mailboxes as demoMailboxes } from "./demo.js";
-import { assembleAnswer, highlightIds, insufficient, planQuestion } from "./assistant.js";
+import { assembleAnswer, continuesSearch, highlightIds, insufficient, planQuestion, routeQuestion } from "./assistant.js";
 
 const byId = id => document.getElementById(id);
 const queryInput = byId("query");
@@ -29,8 +29,9 @@ const state = {
   folder: "inbox", mode: "semantic", query: "", results: null, date: null, selected: null,
   version: 0, pending: false, error: "", loadingMailbox: false, limit: PAGE_SIZE,
   mailboxVersion: 0, details: new Map(), view: "search", applied: false,
-  filters: {}, appliedFilters: {}, orderIds: [], evidence: [], reminders: null,
-  reminderMail: null, fromCitation: false,
+  filters: {}, appliedFilters: {}, orderIds: [], reminders: null,
+  reminderMail: null, fromCitation: false, serverAssistant: false,
+  entryMode: "auto", chat: [], context: null, scrollChat: false,
 };
 
 function localFlags() {
@@ -75,6 +76,11 @@ function visibleMessages() {
     return !flag(mail, "archived");
   });
 }
+
+function selectedMessage() {
+  return visibleMessages().find(mail => mail.id === state.selected)
+    ?? state.messages.find(mail => mail.id === state.selected);
+}
 function highlighted(node, text) {
   for (const [index, part] of highlightIds(text, state.orderIds).entries()) {
     node.append(index % 2 ? make("mark", "", part) : document.createTextNode(part));
@@ -100,7 +106,7 @@ function blank(symbol, title, description) {
 function renderReader(mail, index, count) {
   const tools = byId("letter-tools");
   tools.hidden = !mail;
-  byId("position").textContent = mail && state.applied ? "Результат " + (index + 1) + " из " + count : "Письмо";
+  byId("position").textContent = mail && index >= 0 && state.applied ? "Результат " + (index + 1) + " из " + count : "Письмо";
   if (!mail) {
     letter.replaceChildren(blank("mail", "Выберите письмо", "Письмо откроется здесь."));
     return;
@@ -160,44 +166,153 @@ function setTool(id, label, glyph) {
   if (glyph) button.firstElementChild.textContent = glyph;
 }
 
+function openDraft(draft) {
+  const input = byId("draft-text");
+  input.value = draft.text;
+  input.addEventListener("input", () => { draft.text = input.value; }, { signal: draftEditor.signal });
+  byId("draft-dialog").showModal();
+}
+
+let draftEditor;
+byId("draft-dialog").addEventListener("close", () => draftEditor?.abort());
+
+function sourceButton(id, label) {
+  const mail = state.messages.find(candidate => candidate.id === id);
+  if (!mail) return null;
+  const subject = mail.subject || "Письмо";
+  const compact = subject.length > 62 ? subject.slice(0, 59).trimEnd() + "…" : subject;
+  const button = make("button", "citation", label ?? [compact, when(mail.date, shortDate)].filter(Boolean).join(" · "));
+  button.type = "button";
+  button.title = subject;
+  button.dataset.cite = mail.id;
+  if (mail.id === state.selected && document.body.classList.contains("source-open")) button.setAttribute("aria-current", "true");
+  button.addEventListener("click", () => openMessage(mail, true));
+  return button;
+}
+
+function renderTurn(turn) {
+  const card = make("section", "chat-turn");
+  card.append(make("h3", "question-title", turn.query));
+  if (turn.pending || turn.error) {
+    card.append(make("p", "answer-label", turn.error ? "Не удалось получить результат. Попробуйте ещё раз." : "Ищем письма…"));
+    return card;
+  }
+  const { result, evidence, count } = turn;
+  if (turn.routing?.router === "jev") {
+    const path = turn.routing.route === "search" ? "Поиск" : "Ассистент";
+    card.append(make("p", "answer-label", "Jev · " + path));
+  }
+  if (turn.searchIds) {
+    card.append(make("p", "answer-status", count ? "Найдено: " + messageCount(count) : "Письма не найдены."));
+    const links = make("ul", "chat-results");
+    for (const id of turn.searchIds.slice(0, 3)) {
+      const link = sourceButton(id);
+      if (link) {
+        const row = make("li");
+        row.append(link);
+        links.append(row);
+      }
+    }
+    if (links.childElementCount) card.append(links);
+    if (count) {
+      const button = make("button", "secondary chat-show-results", "К списку писем");
+      button.type = "button";
+      button.addEventListener("click", () => byId("answer-back").click());
+      card.append(button);
+    }
+    return card;
+  }
+  if (result?.refund && !result.actionOnly) {
+    card.append(make("p", "answer-status", result.confirmed
+      ? "В просмотренных письмах есть подтверждение зачисления."
+      : "В просмотренных письмах зачисление не подтверждено."));
+  }
+  if (result?.timeline?.length) {
+    card.append(make("h4", "chat-subtitle", "Статусы в письмах по номеру"));
+    const timeline = make("ol", "timeline");
+    for (const event of result.timeline) {
+      const row = make("li");
+      const source = sourceButton(event.id, "Открыть письмо");
+      row.append(make("span", "timeline-date", [when(event.date, shortDate), event.time.slice(0, 5)].filter(Boolean).join(" · ")),
+        make("strong", "", event.status));
+      if (source) row.append(source);
+      timeline.append(row);
+    }
+    card.append(timeline);
+  }
+  if (evidence.length && !result?.actionOnly) {
+    const provider = result?.provider === "deepseek" ? "Источники подобрал DeepSeek" : "Выдержки из писем";
+    const coverage = result?.reviewed ? " · просмотрено " + result.reviewed + " из " + count : "";
+    card.append(make("p", "answer-label", provider + coverage));
+    const citations = make("ol", "evidence");
+    for (const item of evidence) {
+      const row = make("li");
+      const cite = sourceButton(item.id);
+      if (!cite) continue;
+      if (item.kind === "confirmed") row.append(make("p", "evidence-kind", "Подтверждение"));
+      if (item.kind === "promised") row.append(make("p", "evidence-kind", "Обещание или оформление"));
+      row.append(highlighted(make("blockquote"), item.text), cite);
+      citations.append(row);
+    }
+    card.append(citations);
+  } else if (!result?.actionOnly && !result?.refund && !result?.timeline?.length) {
+    card.append(make("p", "", insufficient));
+  }
+
+  const actions = make("div", "chat-actions");
+  const proposal = result?.reminder;
+  const reminderId = proposal?.id ?? (!result && evidence.length === 1 ? evidence[0].id : null);
+  const mail = reminderId && state.messages.find(candidate => candidate.id === reminderId);
+  if (mail && state.reminders !== null) {
+    const button = make("button", "secondary remind-from-answer", reminderFor(mail) ? "Изменить напоминание" : "Напомнить о письме");
+    button.type = "button";
+    button.addEventListener("click", () => openReminder(mail, proposedTime(proposal)));
+    actions.append(button);
+  }
+  if (result?.draft) {
+    const button = make("button", "secondary", "Черновик ответа");
+    button.type = "button";
+    button.addEventListener("click", () => {
+      draftEditor?.abort();
+      draftEditor = new AbortController();
+      openDraft(result.draft);
+    });
+    actions.append(button);
+  }
+  if (actions.childElementCount) {
+    if (result?.actionOnly) {
+      const source = sourceButton(proposal?.id ?? result.draft?.id);
+      if (source) card.append(source);
+    }
+    card.append(actions);
+  } else if (result?.actionOnly) {
+    card.append(make("p", "", result.confirmed
+      ? "Нашлось подтверждение зачисления. Условие для напоминания не выполнено."
+      : "Не удалось подготовить действие по этим письмам."));
+  }
+  return card;
+}
+
 function renderAnswer() {
   if (state.view !== "ask") return;
   const answer = byId("answer");
   const scroll = answer.scrollTop;
-  const nodes = [];
-  if (state.query) nodes.push(make("h3", "question-title", state.query));
-  if (state.pending) nodes.push(make("p", "answer-label", "Ищем письма для ответа…"));
-  else if (state.error) nodes.push(make("p", "", "Не удалось получить ответ. Попробуйте ещё раз."));
-  else if (!state.applied) nodes.push(blank("auto_awesome", "Спросите о письмах", "Например, когда согласовали доставку или что ответили покупателю."));
-  else if (!state.evidence.length) nodes.push(make("p", "", insufficient));
-  else {
-    nodes.push(make("p", "answer-label", "Выдержки из писем"));
-    const citations = make("ol", "evidence");
-    for (const [index, item] of state.evidence.entries()) {
-      const mail = state.messages.find(candidate => candidate.id === item.id);
-      if (!mail) continue;
-      const row = make("li");
-      const cite = make("button", "citation", [index + 1, mail.subject || "Без темы", when(mail.date, shortDate)].filter(Boolean).join(" · "));
-      cite.type = "button";
-      cite.dataset.cite = mail.id;
-      if (mail.id === state.selected && document.body.classList.contains("source-open")) cite.setAttribute("aria-current", "true");
-      cite.addEventListener("click", () => openMessage(mail, true));
-      row.append(highlighted(make("blockquote"), item.text), cite);
-      citations.append(row);
-    }
-    nodes.push(citations);
-    if (state.evidence.length === 1 && state.reminders !== null) {
-      const mail = state.messages.find(candidate => candidate.id === state.evidence[0].id);
-      if (mail) {
-        const button = make("button", "secondary remind-from-answer", reminderFor(mail) ? "Изменить напоминание" : "Напомнить о письме");
-        button.type = "button";
-        button.addEventListener("click", () => openReminder(mail));
-        nodes.push(button);
-      }
-    }
-  }
+  const currentFocus = document.activeElement?.closest?.(".citation");
+  const nodes = state.chat.map(renderTurn);
+  if (!nodes.length) nodes.push(blank("auto_awesome", "Спросите о письмах", state.context?.ids.length
+    ? "Уточнения будут опираться на найденные письма."
+    : "Например, когда согласовали доставку или что ответили покупателю."));
   answer.replaceChildren(...nodes);
-  answer.scrollTop = scroll;
+  if (state.scrollChat && nodes.length) {
+    const latest = nodes[nodes.length - 1].getBoundingClientRect().top;
+    answer.scrollTop += latest - answer.getBoundingClientRect().top - 20;
+  } else answer.scrollTop = scroll;
+  state.scrollChat = false;
+  byId("chat-submit").disabled = state.pending;
+  byId("new-chat").hidden = !state.context && !state.chat.length;
+  if (currentFocus) {
+    [...answer.querySelectorAll(".citation")].find(node => node.dataset.cite === currentFocus.dataset.cite)?.focus({ preventScroll: true });
+  }
 }
 
 function renderFilters() {
@@ -217,7 +332,8 @@ function renderFilters() {
 
 function render() {
   const rows = visibleMessages();
-  if (!rows.some(mail => mail.id === state.selected)) state.selected = rows[0]?.id ?? null;
+  const fromHistory = state.view === "ask" && document.body.classList.contains("source-open");
+  if (!fromHistory && !rows.some(mail => mail.id === state.selected)) state.selected = rows[0]?.id ?? null;
   if (rows.findIndex(mail => mail.id === state.selected) >= state.limit) state.selected = rows[0]?.id ?? null;
   const scroll = messageList.scrollTop;
   const focusId = document.activeElement?.dataset?.message;
@@ -272,7 +388,8 @@ function render() {
   byId("date-filter").hidden = !state.date;
   byId("date-filter").lastElementChild.textContent = when(state.date, shortDate);
   byId("clear").hidden = !queryInput.value && !state.applied;
-  byId("show-answer").hidden = state.view !== "ask" || !state.applied;
+  byId("show-answer").hidden = state.view !== "ask";
+  byId("ask-results").hidden = state.view !== "search" || !state.context?.ids.length;
   document.body.classList.toggle("asking", state.view === "ask");
   document.querySelector('[data-folder="reminders"]').hidden = state.reminders === null;
   updateReminderCount();
@@ -286,8 +403,9 @@ function render() {
     button.setAttribute("aria-pressed", String(state.mode === button.dataset.mode));
   }
   const index = rows.findIndex(mail => mail.id === state.selected);
-  renderReader(rows[index], index, rows.length);
-  if (state.live && index >= 0 && (state.view === "search" || document.body.classList.contains("source-open"))) loadLetter(rows[index]);
+  const selected = rows[index] ?? (fromHistory ? state.messages.find(mail => mail.id === state.selected) : null);
+  renderReader(selected, index, rows.length);
+  if (state.live && selected && (state.view === "search" || fromHistory)) loadLetter(selected);
   renderAnswer();
   renderFilters();
 }
@@ -322,11 +440,20 @@ function localDateTime(date) {
   return shifted.toISOString().slice(0, 16);
 }
 
-function openReminder(mail) {
+function proposedTime(proposal) {
+  if (!proposal?.time) return null;
+  const [hour, minute] = proposal.time.split(":").map(Number);
+  const date = new Date();
+  date.setDate(date.getDate() + proposal.days);
+  date.setHours(hour, minute, 0, 0);
+  return date > new Date() ? date : null;
+}
+
+function openReminder(mail, proposed = null) {
   const item = reminderFor(mail);
   state.reminderMail = mail;
   byId("reminder-subject").textContent = mail.subject || "Без темы";
-  byId("reminder-time").value = localDateTime(item ? new Date(item.dueAt) : new Date(Date.now() + 60 * 60_000));
+  byId("reminder-time").value = localDateTime(proposed ?? (item ? new Date(item.dueAt) : new Date(Date.now() + 60 * 60_000)));
   byId("reminder-zone").textContent = "Часовой пояс " + Intl.DateTimeFormat().resolvedOptions().timeZone;
   byId("remove-reminder").hidden = !item;
   byId("reminder-error").hidden = true;
@@ -392,7 +519,9 @@ function resetSearch() {
   state.filters = {};
   state.appliedFilters = {};
   state.orderIds = [];
-  state.evidence = [];
+  state.chat = [];
+  state.context = null;
+  byId("chat-query").value = "";
   state.results = null;
   state.date = null;
   state.pending = false;
@@ -470,40 +599,76 @@ async function selectMailbox(id, asOf) {
   state.loadingMailbox = false;
   render();
 }
-async function search() {
-  const query = queryInput.value.trim();
-  if (!query && !Object.values(state.filters).some(Boolean)) {
-    resetSearch();
-    render();
+async function search({ followup = false } = {}) {
+  const input = followup ? byId("chat-query") : queryInput;
+  const query = input.value.trim();
+  if (!query && (followup || !Object.values(state.filters).some(Boolean))) {
+    if (!followup) {
+      resetSearch();
+      render();
+    }
     return;
   }
+  if (followup && state.pending) return;
   const version = ++state.version;
+  const mode = state.entryMode;
+  const route = mode === "auto" ? routeQuestion(query) : mode;
+  const continuation = continuesSearch(query);
+  const useContext = followup || (mode !== "search" && continuation);
+  if (!useContext) {
+    state.chat = [];
+    state.context = null;
+  }
+  if (followup) input.value = "";
+  const inChat = followup || mode !== "search";
+  state.view = inChat ? "ask" : "search";
+  const ask = route === "ask" || route === "auto-ask";
+  const autoRoute = mode === "auto" && query ? (ask ? "agent" : "search") : "";
   const plan = planQuestion(query, state.snapshot, [...new Set(state.messages.map(mail => mail.sender).filter(Boolean))], state.filters);
-  const filters = state.view === "ask" ? plan.filters : state.filters;
+  const previous = useContext ? state.context : null;
+  const explicitNewScope = plan.ids.length && plan.ids.some(id => !previous?.orderIds.includes(id));
+  const newSearch = mode === "auto" && !ask && !continuation
+    && /^(?:найди|покажи|выведи|перечисли|подбери)\s/iu.test(query);
+  const scope = previous && !explicitNewScope && !newSearch ? previous : null;
+  const filters = scope?.filters ?? (mode === "search" ? state.filters : plan.filters);
+  const orderIds = plan.ids.length ? plan.ids : scope?.orderIds ?? [];
+  const turn = { query, pending: true, evidence: [] };
+  if (inChat) {
+    state.chat.push(turn);
+    state.scrollChat = true;
+  }
   state.query = query;
   state.applied = true;
   state.appliedFilters = filters;
-  state.orderIds = plan.ids;
-  state.evidence = [];
+  state.orderIds = orderIds;
   state.selected = null;
   state.results = null;
-  state.date = null;
+  state.date = scope?.date ?? null;
   state.pending = true;
   state.error = "";
   closeReader();
-  if (state.view === "ask" && matchMedia("(max-width: 820px)").matches) document.body.classList.add("answer-open");
+  if (inChat && matchMedia("(max-width: 820px)").matches) document.body.classList.add("answer-open");
   messageList.scrollTop = 0;
   render();
   try {
-    const searchText = state.view === "ask" ? plan.query : query;
-    const request = { mailbox: state.mailbox.id, query: searchText, mode: state.mode, asOf: state.snapshot,
-      filters, orderIds: plan.ids };
-    const demoCandidates = state.live || !plan.ids.length ? state.messages : state.messages.filter(mail => {
-      const text = mail.subject + " " + mail.body;
-      return plan.ids.some(id => highlightIds(text, [id]).length > 1);
-    });
-    const result = state.live ? await api("search", jsonRequest("POST", request), 120_000)
-      : demoSearch(demoCandidates, searchText, state.snapshot, state.mode, filters);
+    const searchText = ask || autoRoute ? plan.query : query;
+    const request = { mailbox: state.mailbox.id, query: searchText, mode: state.mode, asOf: state.snapshot, filters, orderIds };
+    const demoCandidates = !orderIds.length ? state.messages : state.messages.filter(mail =>
+      orderIds.some(id => highlightIds(mail.subject + " " + mail.body, [id]).length > 1));
+    const agent = state.serverAssistant && (ask || Boolean(autoRoute)) && Boolean(query);
+    let result;
+    if (agent) {
+      const context = scope ? [...new Set([scope.root, scope.latest])].filter(Boolean) : [];
+      result = await api("ask", jsonRequest("POST", {
+        ...request, question: query, context, autoRoute, sourceIds: scope?.ids ?? [],
+      }), 120_000);
+    } else if (scope?.ids.length) {
+      result = { ids: scope.ids, date: scope.date };
+    } else if (state.live) {
+      result = await api("search", jsonRequest("POST", request), 120_000);
+    } else {
+      result = demoSearch(demoCandidates, searchText, state.snapshot, state.mode, filters);
+    }
     if (state.version !== version) return;
     if (result.messages) {
       const emails = new Map(state.messages.map(mail => [mail.id, mail]));
@@ -511,20 +676,29 @@ async function search() {
       state.messages = [...emails.values()];
     }
     state.results = result.ids;
-    state.date = result.date;
-    if (state.view === "ask") {
-      const top = visibleMessages().slice(0, 6);
+    state.date = result.date ?? scope?.date ?? null;
+    state.context = { root: scope?.root ?? query, latest: query, ids: result.ids, orderIds, filters, date: state.date };
+    turn.count = result.ids.length;
+    turn.routing = result.routing;
+    if (result.answer) {
+      turn.result = result.answer;
+      turn.evidence = result.answer.evidence;
+    } else if (ask && !agent) {
+      const top = visibleMessages().slice(0, 8);
       const sources = state.live ? await Promise.all(top.map(mail => api("message?" + new URLSearchParams({
         mailbox: mail.mailbox, id: mail.id,
       })).then(payload => payload.message).catch(() => null))) : top;
       if (state.version !== version) return;
-      state.evidence = assembleAnswer(query, sources.filter(Boolean));
-    }
+      turn.evidence = assembleAnswer(query, sources.filter(Boolean));
+    } else turn.searchIds = result.ids;
   } catch {
     if (state.version !== version) return;
     state.error = "search";
+    turn.error = true;
   }
+  turn.pending = false;
   state.pending = false;
+  if (inChat) state.scrollChat = true;
   render();
 }
 
@@ -581,7 +755,7 @@ byId("reminder-form").addEventListener("submit", event => {
 });
 byId("remove-reminder").addEventListener("click", () => saveReminder(true));
 byId("remind").addEventListener("click", () => {
-  const mail = visibleMessages().find(candidate => candidate.id === state.selected);
+  const mail = selectedMessage();
   if (mail) openReminder(mail);
 });
 setInterval(() => {
@@ -591,24 +765,64 @@ setInterval(() => {
   if (previous !== byId("reminder-count").textContent && state.folder === "reminders") render();
 }, 15_000);
 
-function setView(view) {
-  state.view = view;
+function setMode(mode) {
+  state.entryMode = mode;
+  state.view = mode === "ask" ? "ask" : "search";
   for (const button of document.querySelectorAll("[data-view]")) {
-    button.setAttribute("aria-pressed", String(button.dataset.view === view));
+    button.setAttribute("aria-pressed", String(button.dataset.view === mode));
   }
-  byId("submit-query").textContent = view === "ask" ? "Спросить" : "Найти";
-  queryInput.placeholder = view === "ask" ? "Что нужно узнать из писем?" : "Опишите письмо или введите номер заказа";
+  byId("submit-query").textContent = mode === "ask" ? "Спросить" : "Найти";
+  queryInput.placeholder = mode === "ask" ? "Что нужно узнать из писем?" : "Опишите письмо или введите номер заказа";
   showExamples();
 }
+
+function openChat() {
+  closeReader();
+  state.view = "ask";
+  if (!state.chat.length && state.context?.root) {
+    const { root, ids } = state.context;
+    state.chat.push({ query: root, count: ids.length, searchIds: ids });
+  }
+  document.body.classList.add("answer-open");
+  render();
+  byId("chat-query").focus();
+}
+
 for (const button of document.querySelectorAll("[data-view]")) {
   button.addEventListener("click", () => {
-    if (button.dataset.view === state.view) return;
-    setView(button.dataset.view);
+    if (button.dataset.view !== "search") {
+      setMode(button.dataset.view);
+      return openChat();
+    }
     closeReader();
-    if (state.applied) search();
-    else render();
+    setMode(button.dataset.view);
+    render();
   });
 }
+
+byId("ask-results").addEventListener("click", () => {
+  setMode("ask");
+  openChat();
+});
+byId("chat-form").addEventListener("submit", event => {
+  event.preventDefault();
+  search({ followup: true });
+});
+byId("new-chat").addEventListener("click", () => {
+  resetSearch();
+  openChat();
+});
+byId("copy-draft").addEventListener("click", async () => {
+  const input = byId("draft-text");
+  try {
+    await navigator.clipboard.writeText(input.value);
+    notify("Черновик скопирован");
+    byId("draft-dialog").close();
+  } catch {
+    input.select();
+  }
+});
+
 byId("show-answer").addEventListener("click", () => {
   document.body.classList.add("answer-open");
   byId("answer-back").focus();
@@ -639,7 +853,7 @@ for (const button of document.querySelectorAll("[data-folder]")) {
   button.addEventListener("click", () => {
     resetSearch();
     state.folder = button.dataset.folder;
-    setView("search");
+    setMode("auto");
     setMenu(false);
     render();
   });
@@ -692,7 +906,7 @@ for (const [id, name, added, removed] of [
   ["read-toggle", "unread", "Письмо отмечено непрочитанным", "Письмо отмечено прочитанным"],
 ]) {
   byId(id).addEventListener("click", () => {
-    const mail = visibleMessages().find(candidate => candidate.id === state.selected);
+    const mail = selectedMessage();
     if (!mail) return;
     const value = !flag(mail, name);
     setFlag(mail, name, value);
@@ -706,6 +920,7 @@ try {
   const payload = await api("mailboxes", undefined, 3000);
   if (payload.mailboxes?.length && payload.engine) {
     state.live = true;
+    state.serverAssistant = payload.assistant === true;
     state.mailboxes = payload.mailboxes;
     byId("source-label").textContent = "Корпус хакатона";
     byId("today").hidden = true;

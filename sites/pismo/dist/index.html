@@ -38,7 +38,8 @@
         <div class="search-head">
           <div><h1 id="search-heading">Умный поиск</h1><p id="search-description">Опишите письмо своими словами.</p></div>
           <div class="mode" role="group" aria-label="Поиск или ассистент">
-            <button type="button" data-view="search" aria-pressed="true">Поиск</button>
+            <button type="button" data-view="auto" aria-pressed="true">Авто</button>
+            <button type="button" data-view="search" aria-pressed="false">Поиск</button>
             <button type="button" data-view="ask" aria-pressed="false"><span class="icon" aria-hidden="true">auto_awesome</span>Спросить</button>
           </div>
         </div>
@@ -61,6 +62,7 @@
             <div><h2 id="list-title">Входящие</h2><small id="list-count" role="status"></small></div>
             <div class="list-actions">
               <span id="date-filter" class="date-filter" hidden><span class="icon" aria-hidden="true">calendar_today</span><span></span></span>
+              <button type="button" class="secondary" id="ask-results" hidden>Спросить</button>
               <button type="button" class="show-answer" id="show-answer" hidden>К ответу</button>
             </div>
           </header>
@@ -82,9 +84,15 @@
         <article class="answer-pane" id="answer-pane" aria-labelledby="answer-title">
           <header class="reader-tools answer-head">
             <button type="button" class="back" id="answer-back"><span class="icon" aria-hidden="true">arrow_back</span>К письмам</button>
-            <h2 id="answer-title">Ответ по письмам</h2>
+            <h2 id="answer-title">Диалог по письмам</h2>
+            <button type="button" class="secondary new-chat" id="new-chat" hidden>Новый диалог</button>
           </header>
-          <div class="reader-body answer-body" id="answer" role="region" aria-label="Ответ и источники" tabindex="0"></div>
+          <div class="reader-body answer-body" id="answer" role="region" aria-label="Диалог и источники" tabindex="0"></div>
+          <form id="chat-form" class="chat-form">
+            <label class="sr-only" for="chat-query">Сообщение ассистенту</label>
+            <input id="chat-query" type="text" maxlength="500" placeholder="Уточнить по этим письмам" autocomplete="off">
+            <button type="submit" class="find" id="chat-submit">Спросить</button>
+          </form>
         </article>
       </section>
     </main>
@@ -105,6 +113,16 @@
         <button type="button" class="secondary" data-close="filters-dialog">Отмена</button>
         <button type="button" class="secondary" id="reset-filters">Сбросить</button>
         <button type="submit" class="find">Применить</button>
+      </div>
+    </form>
+  </dialog>
+  <dialog id="draft-dialog" aria-labelledby="draft-title">
+    <form class="dialog-form">
+      <h2 id="draft-title">Черновик ответа</h2>
+      <label>Текст письма <textarea id="draft-text" rows="7" maxlength="4000"></textarea></label>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" data-close="draft-dialog">Закрыть</button>
+        <button type="button" class="find" id="copy-draft">Скопировать</button>
       </div>
     </form>
   </dialog>
