@@ -50,15 +50,19 @@ class SearchEngine:
         idf_mode: str = "global",
         stemmer: textmod.RussianStemmer | None = None,
         soft_prefix_len: int = textmod.SOFT_PREFIX_LEN,
+        subject_boost: int = 1,
         snippet_len: int = 220,
     ) -> None:
         if not documents:
             raise ValueError("пустой корпус")
+        if subject_boost < 1:
+            raise ValueError("subject_boost должен быть >= 1")
 
         self._docs = list(documents)
         self._stemmer = stemmer or textmod.RussianStemmer()
         self._idf_mode = idf_mode
         self._soft_prefix_len = soft_prefix_len
+        self._subject_boost = subject_boost
         self._snippet_len = snippet_len
 
         self._by_box: dict[str, list[int]] = {}
@@ -70,9 +74,14 @@ class SearchEngine:
             self._by_box.setdefault(doc.mailbox, []).append(doc_idx)
             self._dates.append(doc.date)
             self._snippets.append(self._make_snippet(doc.text))
+            source = doc.text
+            if self._subject_boost > 1:
+                subject, body = textmod.split_subject_body(doc.text)
+                if subject:
+                    source = (subject + " ") * self._subject_boost + body
             token_lists.append(
                 textmod.tokenize(
-                    doc.text, self._stemmer, soft_prefix_len=self._soft_prefix_len
+                    source, self._stemmer, soft_prefix_len=self._soft_prefix_len
                 )
             )
 

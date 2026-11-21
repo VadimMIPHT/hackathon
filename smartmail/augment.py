@@ -24,6 +24,7 @@ import urllib.request
 from dataclasses import dataclass
 from datetime import date, timedelta
 
+from . import text as textmod
 from .io import Document
 
 STYLES = ("direct", "paraphrase", "vague", "keywords", "followup")
@@ -117,15 +118,7 @@ def split_email(document: Document) -> EmailView | None:
     if not text.strip() or document.date is None:
         return None
 
-    subject_match = re.search(r"(?is)\bтема\s*:\s*(.+)", text)
-    if subject_match:
-        subject = re.split(r"(?i)\bтекст письма\b", subject_match.group(1))[0]
-        subject = subject.splitlines()[0]
-    else:
-        subject = text.strip().splitlines()[0] if text.strip() else ""
-
-    body_match = re.search(r"(?is)\bтекст письма\s*:\s*(.*)", text)
-    body = body_match.group(1) if body_match else text
+    subject, body = textmod.split_subject_body(text)
 
     sender_match = re.search(r"(?im)^\s*от\s*:\s*(\S+)", text)
 

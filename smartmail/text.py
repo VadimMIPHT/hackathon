@@ -115,6 +115,21 @@ def raw_tokens(value: str) -> list[str]:
     return _WORD_RE.findall(value)
 
 
+def split_subject_body(value: str) -> tuple[str, str]:
+    """Выделить тему и тело письма (без нормализации и стемминга)."""
+    text = value or ""
+    subject_match = re.search(r"(?is)\bтема\s*:\s*(.+)", text)
+    if subject_match:
+        subject = re.split(r"(?i)\bтекст письма\b", subject_match.group(1))[0]
+        subject = subject.splitlines()[0]
+    else:
+        subject = text.strip().splitlines()[0] if text.strip() else ""
+
+    body_match = re.search(r"(?is)\bтекст письма\s*:\s*(.*)", text)
+    body = body_match.group(1) if body_match else text
+    return subject.strip(), body
+
+
 def _regions(word: str) -> tuple[int, int, int]:
     """Границы RV, R1 и R2 по определению Snowball."""
     limit = len(word)

@@ -10,7 +10,7 @@ from smartmail import metrics
 from smartmail.dates import extract_date
 from smartmail.engine import SearchEngine
 from smartmail.io import Document, load_documents, load_qrels, load_queries
-from smartmail.text import RussianStemmer, normalize, query_terms
+from smartmail.text import RussianStemmer, normalize, query_terms, split_subject_body
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 QUERY_DATE = date(2028, 9, 16)
@@ -91,6 +91,11 @@ class TestText(unittest.TestCase):
         stemmer = RussianStemmer()
         self.assertEqual(stemmer.stem("чек"), "чек")
 
+    def test_split_subject_body(self) -> None:
+        subject, body = split_subject_body("Тема: Операция отклонена\n\nПлатёж не прошёл.")
+        self.assertEqual(subject, "Операция отклонена")
+        self.assertIn("Платёж не прошёл", body)
+
     def test_query_terms_drop_filler_and_date_words(self) -> None:
         terms = query_terms("покажи уведомления о сбоях модуля, полученные вчера")
         self.assertIn("уведомлен", terms)
@@ -148,6 +153,13 @@ class TestEngine(unittest.TestCase):
             "уведомления о погрузке контейнеров", "box-a", "2028-09-16", top_k=2
         )
         self.assertEqual(result.hits[0].doc_id, "d2")
+
+    def test_subject_boost_smoke(self) -> None:
+        engine = SearchEngine(
+            [doc("s1", text="Тема: Возврат средств\n\nПодробности.", doc_date="2028-09-15")],
+            subject_boost=2,
+        )
+        self.assertTrue(engine.search("возврат", "box-a", "2028-09-16").hits)
 
     def test_unknown_dates_are_excluded_from_exact_day(self) -> None:
         engine = SearchEngine([doc("n1", text="письмо без даты", doc_date=None)])
