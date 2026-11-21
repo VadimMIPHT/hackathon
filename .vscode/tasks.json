@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "evaluate: dev + абляция",
+      "type": "shell",
+      "command": "python3 evaluate.py --data data --ablation",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "evaluate: dev",
+      "type": "shell",
+      "command": "python3 evaluate.py --data data",
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "тесты",
+      "type": "shell",
+      "command": "python3 -m unittest discover -s tests -v",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
