@@ -264,6 +264,12 @@ def main() -> None:
         default="global",
         help="IDF по всему корпусу или по кандидатам дня",
     )
+    parser.add_argument(
+        "--subject-boost",
+        type=int,
+        default=1,
+        help="во сколько раз повторить тему письма при индексации (1 — выключено)",
+    )
     parser.add_argument("--ablation", action="store_true", help="прогнать варианты без даты/текста")
     args = parser.parse_args()
 
@@ -275,7 +281,9 @@ def main() -> None:
     qrels = load_qrels(qrels_path)
 
     started = perf_counter()
-    engine = SearchEngine(documents, k1=args.k1, b=args.b, idf_mode=args.idf)
+    engine = SearchEngine(
+        documents, k1=args.k1, b=args.b, idf_mode=args.idf, subject_boost=args.subject_boost
+    )
     build_ms = (perf_counter() - started) * 1000.0
 
     print(
@@ -304,7 +312,10 @@ def main() -> None:
     if args.ablation:
         print()
         ablation = {}
-        local_engine = SearchEngine(documents, k1=args.k1, b=args.b, idf_mode="local")
+        local_engine = SearchEngine(
+            documents, k1=args.k1, b=args.b, idf_mode="local",
+            subject_boost=args.subject_boost,
+        )
         ablation["full"] = results
         ablation["local_idf"] = variant_rows(
             local_engine, queries, qrels, use_date_filter=True, use_text=True
