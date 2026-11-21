@@ -33,7 +33,7 @@ python3 evaluate.py --data data --ablation      # плюс сравнение в
 python3 demo.py --data data \
   --query "Найди уведомления об отклонённых платежах, полученные 29 января 2028 года." \
   --user box-... --date 2028-01-30 --k 5
-python3 -m unittest discover -s tests -v        # 27 тестов
+python3 -m unittest discover -s tests -v        # 47 тестов
 ```
 
 Отчёты пишутся в `reports/`: `dev_report.md`, `dev_metrics.json`,
@@ -56,7 +56,7 @@ python3 -m unittest discover -s tests -v        # 27 тестов
    - **evaluate: dev + абляция** — метрики и сравнение вариантов;
    - **evaluate: dev** — только основные метрики;
    - **demo: отклонённые платежи** — пример выдачи по одному запросу;
-   - **unittest: все тесты** — 27 тестов под отладчиком.
+   - **unittest: все тесты** — 47 тестов под отладчиком.
 5. Панель Testing (иконка колбы) → **Run All Tests**: конфигурация
    unittest уже прописана в `.vscode/settings.json`.
 6. `Ctrl+Shift+B` — быстрый запуск `evaluate` без отладчика
@@ -75,6 +75,56 @@ python3 -m unittest discover -s tests -v
 Если VS Code не знает тип конфигурации `debugpy` (старое расширение
 Python), замените `"type": "debugpy"` на `"type": "python"` в
 `.vscode/launch.json`.
+
+## Аугментация данных
+
+Dev-набор — 99 запросов одного шаблона «тип письма + дата». Для файнтюна
+би-энкодера и проверки устойчивости к перефразировкам этого мало, поэтому
+есть генератор синтетических запросов: [smartmail/augment.py](smartmail/augment.py)
+и [scripts/augment.py](scripts/augment.py).
+
+Генерируются запросы, а не письма: 16k документов достаточно для retrieval,
+а синтетические письма только добавляют шум в индекс. Положительный документ
+у сгенерированного запроса известен по построению.
+
+```bash
+# без сети: шаблонный fallback, проверить пайплайн
+python3 scripts/augment.py --data data --out data_aug \
+    --backend template --limit 300 --per-email 6
+
+# OpenAI-совместимый API, ключ только в переменной окружения
+export OPENAI_API_KEY=...
+python3 scripts/augment.py --data data --out data_aug \
+    --backend openai --model gpt-4o-mini --limit 2000 --per-email 5 --negatives 10
+
+# локальная Ollama
+python3 scripts/augment.py --data data --out data_aug \
+    --backend ollama --model qwen2.5:7b --limit 2000
+```
+
+Результат: `data_aug/queries.jsonl`, `qrels.jsonl`, `pairs.jsonl` (с hard
+negatives), `summary.json`. Каталог `data_aug/` не коммитится — это
+генерируемые данные.
+
+Проверка на аугментированном наборе:
+
+```bash
+python3 evaluate.py --data data \
+    --queries data_aug/queries.jsonl --qrels data_aug/qrels.jsonl --split aug
+```
+
+Что важно понимать:
+
+- qrels синтетические, по одному положительному на запрос, поэтому
+  `Recall@10` здесь — это Hit@10 и нижняя оценка. Сравнивать с dev нельзя.
+- шаблонный backend — только проверка пайплайна: запросы получаются близкими
+  к теме письма и почти не проверяют пересказ смысла. Для реальной
+  аугментации нужен LLM-backend.
+- дедупликация идёт по тексту запроса: одинаковые формулировки из разных
+  писем схлопываются, иначе метки противоречат друг другу.
+- на шаблонном backend BM25 даёт R@10 ≈ 0.61 против 0.90 на dev: без даты
+  и с общими формулировками письмо трудно отличить от похожих. Это аргумент
+  за dense-ретривер и за более конкретные запросы от LLM.
 
 ## Как устроено
 
@@ -148,7 +198,9 @@ smartmail/
   metrics.py   Recall@K, nDCG@K, MRR@K
 evaluate.py    CLI-замер, абляция, отчёты
 demo.py        ручная проверка одного запроса
-tests/         27 тестов: даты, стеммер, метрики, фильтры, e2e
+scripts/
+  augment.py   генерация синтетических запросов (template/OpenAI/Ollama)
+tests/         47 тестов: даты, стеммер, метрики, фильтры, e2e, аугментация
 ```
 
 Индекс собирается один раз в `SearchEngine.__init__`: токенизация

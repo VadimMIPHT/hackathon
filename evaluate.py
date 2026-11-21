@@ -244,6 +244,16 @@ def write_reports(
 def main() -> None:
     parser = argparse.ArgumentParser(description="Бейзлайн поиска писем: ящик + дата + BM25")
     parser.add_argument("--data", default="data", help="каталог с documents/queries/qrels")
+    parser.add_argument(
+        "--queries",
+        default=None,
+        help="путь к queries.jsonl (по умолчанию <data>/queries_dev.jsonl)",
+    )
+    parser.add_argument(
+        "--qrels",
+        default=None,
+        help="путь к qrels.jsonl (по умолчанию <data>/qrels_dev.jsonl)",
+    )
     parser.add_argument("--out", default="reports", help="каталог для отчётов")
     parser.add_argument("--split", default="dev", help="имя сплита для файлов отчёта")
     parser.add_argument("--k1", type=float, default=1.5)
@@ -259,8 +269,10 @@ def main() -> None:
 
     data_dir = Path(args.data)
     documents = load_documents(data_dir / "documents.jsonl")
-    queries = load_queries(data_dir / "queries_dev.jsonl")
-    qrels = load_qrels(data_dir / "qrels_dev.jsonl")
+    queries_path = Path(args.queries) if args.queries else data_dir / "queries_dev.jsonl"
+    qrels_path = Path(args.qrels) if args.qrels else data_dir / "qrels_dev.jsonl"
+    queries = load_queries(queries_path)
+    qrels = load_qrels(qrels_path)
 
     started = perf_counter()
     engine = SearchEngine(documents, k1=args.k1, b=args.b, idf_mode=args.idf)
