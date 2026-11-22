@@ -17,6 +17,9 @@ from threading import Lock
 from urllib.parse import parse_qs, urlencode, urlsplit
 
 from mail_search.assistant import MailAssistant
+from mail_search.conditional import (
+    ConditionalReminders, MAX_CANDIDATES, confirm, contains_anchors, default_anchors, reminder_draft,
+)
 from mail_search.dataset import Dataset, Document, Query, load_archive
 from mail_search.reranker_data import documents_by_mailbox
 from mail_search.retrieval import BM25, CALENDAR_DATE, YESTERDAY, day_from_query, eligible_indices, fields, searchable_text
@@ -109,7 +112,7 @@ class ArchiveSearch:
     def __init__(
         self, dataset: Dataset, neural: NeuralRanker | None, reminders_db: Path,
         openrouter_key_file: Path | None = None, assistant_limit: int = 20, *,
-        use_openrouter_env: bool = False, upstream_port: int | None = None,
+        use_openrouter_env: bool = False, upstream_port: int | None = None, condition_checks: int = 0,
     ) -> None:
         self.dataset = dataset
         boxes = documents_by_mailbox(dataset)
@@ -127,6 +130,7 @@ class ArchiveSearch:
                 "due_at TEXT NOT NULL, PRIMARY KEY (dataset, mailbox, message_id))"
             )
         self.assistant = MailAssistant(reminders_db, openrouter_key_file, assistant_limit, use_env=use_openrouter_env)
+        self.conditional = ConditionalReminders(reminders_db, dataset.archive_sha256, condition_checks) if condition_checks else None
         self.profiles = {}
         for position, (box, docs) in enumerate(self.boxes.items(), start=1):
             sample = [query for query in dataset.queries.values() if query.mailbox == box]
@@ -241,12 +245,30 @@ class ArchiveSearch:
             isinstance(id_, str) and re.fullmatch(r"[0-9]{2,16}|SYN-[0-9a-f]{6,24}", id_, re.I) for id_ in order_ids
         ):
             raise ValueError("Invalid reference")
-        if source_ids:
-            as_of = date.fromisoformat(request.get("asOf", self.profiles[mailbox]["asOf"]))
-            docs = [self.dataset.documents[id_] for id_ in dict.fromkeys(source_ids)]
-            if any(doc.mailbox != mailbox or doc.received and doc.received > as_of for doc in docs):
-                raise ValueError("Message is outside conversation scope")
-            scoped_result = {"ids": [doc.doc_id for doc in docs], "date": None, "messages": [present(doc) for doc in docs]}
+        as_of = date.fromisoformat(request.get("asOf", self.profiles[mailbox]["asOf"]))
+        docs = [self.dataset.documents[id_] for id_ in dict.fromkeys(source_ids)]
+        if any(doc.mailbox != mailbox or doc.received and doc.received > as_of for doc in docs):
+            raise ValueError("Message is outside conversation scope")
+        scoped_result = {"ids": [doc.doc_id for doc in docs], "date": None, "messages": [present(doc) for doc in docs]}
+        draft = reminder_draft(question, as_of) if self.conditional else None
+        if draft is not None:
+            focused = request.get("focusedId")
+            if focused:
+                doc = self.dataset.documents[focused]
+                if doc.mailbox != mailbox or doc.received and doc.received > as_of:
+                    raise ValueError("Message is outside conversation scope")
+                docs = [doc]
+                scoped_result = {"ids": [doc.doc_id], "date": None, "messages": [present(doc)]}
+            elif not docs and order_ids:
+                search = self.search({**request, "query": " ".join(order_ids)}, day_text="")
+                scoped_result = search
+                docs = [self.dataset.documents[doc_id] for doc_id in search["ids"]]
+            draft["sources"] = []
+            for doc in docs[:6]:
+                matched_ids = [item.upper() for item in order_ids if contains_anchors(doc.text, [item])]
+                anchors = list(dict.fromkeys([*matched_ids, *default_anchors(doc.text)]))[:6]
+                draft["sources"].append({"id": doc.doc_id, "anchors": anchors})
+            return {**scoped_result, "answer": {"evidence": [], "conditionalDraft": draft}}
 
         return self.assistant.answer(
             question.strip(), request,
@@ -293,6 +315,52 @@ class ArchiveSearch:
                 )
         return self.reminders(mailbox)
 
+    def confirmation_candidates(
+        self, source: Document, start: date, end: date, condition: str, anchors: list[str],
+    ) -> list[Document]:
+        docs = self.boxes[source.mailbox]
+        eligible = [i for i, doc in enumerate(docs) if doc.doc_id != source.doc_id and doc.received
+                    and start <= doc.received <= end and contains_anchors(doc.text, anchors)]
+        if len(eligible) <= MAX_CANDIDATES:
+            return [docs[i] for i in reversed(eligible)]
+        ranked = self.lexical[source.mailbox].rank(condition, eligible, MAX_CANDIDATES)
+        if not anchors and (self.neural or self.upstream_port):
+            try:
+                result = self.search({"mailbox": source.mailbox, "query": condition, "asOf": end.isoformat(),
+                                      "filters": {"from": start.isoformat()}, "mode": "semantic"}, day_text="")
+            except RemoteError:
+                result = {"ids": []}
+            eligible_ids = {docs[i].doc_id for i in eligible}
+            ranked = [doc_id for doc_id in result["ids"] if doc_id in eligible_ids][:MAX_CANDIDATES] + ranked
+        shortlist = [*ranked, *(docs[i].doc_id for i in eligible)]
+        return [self.dataset.documents[doc_id] for doc_id in list(dict.fromkeys(shortlist))[:MAX_CANDIDATES]]
+
+    def conditional_reminders(self, mailbox: str, as_of: date) -> dict:
+        if not self.conditional or mailbox not in self.boxes:
+            raise ValueError("Conditional reminders are unavailable")
+        key = self.assistant.key()
+        def judge(source: Document, condition: str, anchors: list[str], doc: Document) -> str | None:
+            return confirm(key, condition, anchors, present(doc, full=True), present(source, full=True))
+
+        return {"reminders": self.conditional.list(
+            mailbox, as_of, self.dataset.documents, self.confirmation_candidates, present, judge if key else None,
+        )}
+
+    def set_conditional_reminder(self, request: dict, *, remove: bool) -> dict:
+        doc = self.dataset.documents[request["messageId"]]
+        if not self.conditional or doc.mailbox != request["mailbox"]:
+            raise ValueError("Unknown reminder")
+        as_of = date.fromisoformat(request["asOf"])
+        if remove:
+            self.conditional.remove(doc)
+        else:
+            condition, anchors = request["condition"], request["anchors"]
+            if not isinstance(condition, str) or not isinstance(anchors, list) or not all(isinstance(a, str) for a in anchors):
+                raise ValueError("Invalid condition")
+            self.conditional.save(doc, as_of, datetime.fromisoformat(request["dueAt"]), condition.strip(),
+                                  list(dict.fromkeys(a.strip() for a in anchors)))
+        return {"saved": True}
+
 
 class Handler(SimpleHTTPRequestHandler):
     def __init__(self, *args, app: ArchiveSearch, port: int, **kwargs) -> None:
@@ -338,6 +406,7 @@ class Handler(SimpleHTTPRequestHandler):
                         "mailboxes": list(self.app.profiles.values()),
                         "engine": "e5-bge" if self.app.neural or self.app.upstream_port else "bm25",
                         "assistant": True,
+                        "conditionalReminders": self.app.conditional is not None,
                     }
                 case "/api/messages":
                     mailbox = params["mailbox"][0]
@@ -348,8 +417,12 @@ class Handler(SimpleHTTPRequestHandler):
                     if doc.mailbox != params["mailbox"][0]:
                         raise KeyError("Unknown message")
                     payload = {"message": present(doc, full=True)}
+                    if self.app.conditional:
+                        payload["message"]["conditionAnchors"] = default_anchors(doc.text)
                 case "/api/reminders":
                     payload = self.app.reminders(params["mailbox"][0])
+                case "/api/conditional-reminders":
+                    payload = self.app.conditional_reminders(params["mailbox"][0], date.fromisoformat(params["asOf"][0]))
                 case _:
                     self.reply(404, {"error": "Unknown endpoint"})
                     return
@@ -368,9 +441,13 @@ class Handler(SimpleHTTPRequestHandler):
             self.mutate("/api/search", self.app.search)
 
     def do_PUT(self) -> None:
+        if self.path == "/api/conditional-reminders":
+            return self.mutate(self.path, partial(self.app.set_conditional_reminder, remove=False))
         self.mutate("/api/reminders", partial(self.app.set_reminder, remove=False))
 
     def do_DELETE(self) -> None:
+        if self.path == "/api/conditional-reminders":
+            return self.mutate(self.path, partial(self.app.set_conditional_reminder, remove=True))
         self.mutate("/api/reminders", partial(self.app.set_reminder, remove=True))
 
     def mutate(self, endpoint: str, action: Callable[[dict], dict]) -> None:
@@ -416,6 +493,8 @@ def main() -> None:
     parser.add_argument("--openrouter-key-file", type=Path, help="Owner-only file with the OpenRouter API key")
     parser.add_argument("--openrouter-env", action="store_true", help="Use the OPENROUTER_API_KEY environment variable")
     parser.add_argument("--assistant-limit", type=int, default=20, help="Total number of questions sent to OpenRouter")
+    parser.add_argument("--condition-checks", type=int, default=0,
+                        help="Enable conditional reminders and set the separate Jev request budget")
     parser.add_argument("--upstream-port", type=int, help="Use an SSH-forwarded H200 search/reminder API on localhost")
     for name in ("e5-model", "bge-model", "bge-weights"):
         parser.add_argument(f"--{name}", type=Path)
@@ -425,8 +504,8 @@ def main() -> None:
         parser.error(f"Archive not found at {archive}. Pass --archive /path/to/{ARCHIVE_NAME}.")
     if not (args.dist / "index.html").is_file():
         parser.error("--dist must point to the Sites dist folder")
-    if args.assistant_limit < 0:
-        parser.error("--assistant-limit must be nonnegative")
+    if args.assistant_limit < 0 or args.condition_checks < 0:
+        parser.error("OpenRouter request limits must be nonnegative")
     if args.openrouter_env and args.openrouter_key_file:
         parser.error("Select one OpenRouter key source")
     if args.upstream_port and not (0 < args.upstream_port < 65536 and args.upstream_port != args.port):
@@ -439,6 +518,7 @@ def main() -> None:
     app = ArchiveSearch(
         dataset, neural, args.reminders_db, args.openrouter_key_file, args.assistant_limit,
         use_openrouter_env=args.openrouter_env, upstream_port=args.upstream_port,
+        condition_checks=args.condition_checks,
     )
     handler = partial(Handler, app=app, port=args.port, directory=str(args.dist.resolve()))
     if args.unix_socket:

@@ -130,7 +130,19 @@
     <form id="reminder-form" class="dialog-form">
       <h2 id="reminder-title">Напомнить о письме</h2>
       <p id="reminder-subject"></p>
-      <div class="reminder-presets">
+      <label class="condition-toggle" id="condition-toggle" hidden>
+        <input type="checkbox" id="reminder-conditional"> Только если подтверждение не придёт
+      </label>
+      <div class="condition-fields" id="condition-fields" hidden>
+        <label>Что должно подтвердиться?
+          <textarea id="reminder-condition" rows="2" maxlength="360" placeholder="Например, машина приехала за контейнером"></textarea>
+        </label>
+        <label>Ключи для поиска подтверждения
+          <input type="text" id="condition-anchors" maxlength="610" placeholder="Номер заявки, клиент или отправитель">
+        </label>
+        <small>Разделяйте ключи запятыми. Письмо должно содержать все указанные ключи.</small>
+      </div>
+      <div class="reminder-presets" id="reminder-presets">
         <button type="button" class="secondary" data-preset="5">Через 5 минут</button>
         <button type="button" class="secondary" data-preset="60">Через час</button>
         <button type="button" class="secondary" data-preset="tomorrow">Завтра в 09:00</button>

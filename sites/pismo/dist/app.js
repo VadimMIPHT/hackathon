@@ -30,6 +30,7 @@ const state = {
   version: 0, pending: false, error: "", loadingMailbox: false, limit: PAGE_SIZE,
   mailboxVersion: 0, details: new Map(), view: "search", applied: false,
   filters: {}, appliedFilters: {}, orderIds: [], reminders: null,
+  supportsConditions: false, conditions: [], conditionVersion: 0, openedConfirmation: null,
   reminderMail: null, fromCitation: false, serverAssistant: false,
   entryMode: "auto", chat: [], context: null, scrollChat: false,
 };
@@ -69,7 +70,10 @@ function messageCount(n) {
 }
 function visibleMessages() {
   if (state.applied) return (state.results || []).map(id => state.messages.find(mail => mail.id === id)).filter(Boolean);
-  if (state.folder === "reminders") return (state.reminders || []).map(entry => entry.message);
+  if (state.folder === "reminders") {
+    const entries = [...state.conditions, ...(state.reminders || [])];
+    return [...new Map(entries.map(entry => [entry.message.id, entry.message])).values()];
+  }
   return state.messages.filter(mail => {
     if (state.folder === "starred") return flag(mail, "starred");
     if (state.folder === "archive") return flag(mail, "archived");
@@ -97,6 +101,34 @@ function reminderText(item) {
   const label = Date.parse(item.dueAt) <= Date.now() ? "Срок наступил" : "Напомнить";
   return label + " · " + reminderDate.format(new Date(item.dueAt));
 }
+function conditionFor(mail) {
+  return state.conditions.find(item => item.message.id === mail.id);
+}
+
+function conditionText(item) {
+  const label = { pending: "Ждём подтверждения", fulfilled: "Подтверждено письмом", due: "Срок наступил" }[item.status];
+  return item.status === "fulfilled" ? label : label + " · " + reminderDate.format(new Date(item.dueAt));
+}
+
+function renderCondition(item, showFact) {
+  const details = make("section", "condition-status");
+  details.append(make("p", "reminder-status", conditionText(item)));
+  if (showFact) details.append(make("p", "", item.condition));
+  if (item.evidence) {
+    const source = make("button", "citation", "Открыть подтверждение");
+    source.type = "button";
+    source.addEventListener("click", () => {
+      state.openedConfirmation = { mail: item.evidence, origin: item.message.id, fromCitation: state.fromCitation };
+      openMessage(item.evidence, true);
+      document.body.classList.add("source-open");
+      byId("back").focus();
+    });
+    details.append(make("blockquote", "", item.quote), source);
+  } else if (item.checkUnavailable) {
+    details.append(make("p", "answer-label", "Автопроверка пока недоступна."));
+  }
+  return details;
+}
 function blank(symbol, title, description) {
   const container = make("div", "empty");
   container.append(icon(symbol), make("strong", "", title), make("p", "", description));
@@ -111,7 +143,9 @@ function renderReader(mail, index, count) {
     letter.replaceChildren(blank("mail", "Выберите письмо", "Письмо откроется здесь."));
     return;
   }
-  const subject = highlighted(make("h2"), mail.subject || "Без темы");
+  const condition = conditionFor(mail);
+  const showFactAsTitle = condition && state.folder === "reminders";
+  const subject = highlighted(make("h2"), showFactAsTitle ? condition.condition : mail.subject || "Без темы");
   const header = make("div", "envelope");
   const sender = make("div", "identity");
   sender.append(make("span", "name", mail.sender || "Отправитель не указан"));
@@ -131,7 +165,9 @@ function renderReader(mail, index, count) {
     });
     body.append(retry);
   }
-  const elements = [subject, header, body];
+  const elements = [subject, header];
+  if (condition) elements.push(renderCondition(condition, !showFactAsTitle));
+  elements.push(body);
   if (mail.category) {
     const category = make("span", "category");
     category.textContent = mail.category;
@@ -155,8 +191,8 @@ function renderReader(mail, index, count) {
   setTool("star", starred ? "Убрать из избранного" : "В избранное");
   setTool("archive", archived ? "Вернуть во входящие" : "В архив", archived ? "unarchive" : "archive");
   setTool("read-toggle", flag(mail, "unread") ? "Отметить прочитанным" : "Отметить непрочитанным");
-  byId("remind").hidden = state.reminders === null;
-  setTool("remind", reminder ? "Изменить напоминание" : "Напомнить о письме");
+  byId("remind").hidden = state.reminders === null && !state.supportsConditions;
+  setTool("remind", reminder || condition ? "Изменить напоминание" : "Напомнить о письме");
 }
 
 function setTool(id, label, glyph) {
@@ -176,7 +212,7 @@ function openDraft(draft) {
 let draftEditor;
 byId("draft-dialog").addEventListener("close", () => draftEditor?.abort());
 
-function sourceButton(id, label) {
+function sourceButton(id, label, select = mail => openMessage(mail, true)) {
   const mail = state.messages.find(candidate => candidate.id === id);
   if (!mail) return null;
   const subject = mail.subject || "Письмо";
@@ -186,8 +222,44 @@ function sourceButton(id, label) {
   button.title = subject;
   button.dataset.cite = mail.id;
   if (mail.id === state.selected && document.body.classList.contains("source-open")) button.setAttribute("aria-current", "true");
-  button.addEventListener("click", () => openMessage(mail, true));
+  button.addEventListener("click", () => select(mail));
   return button;
+}
+
+function renderConditionalDraft(card, draft) {
+  card.append(make("p", "answer-status", draft.condition));
+  const sources = draft.sources;
+  if (!sources.length) {
+    card.append(make("p", "", "Сначала найди нужное письмо или укажи его номер, затем повтори просьбу."));
+    return card;
+  }
+  if (sources.length > 1) {
+    card.append(make("p", "", "Выбери исходное письмо, чтобы я подставил его ключи."));
+    const links = make("ul", "chat-results");
+    for (const source of sources) {
+      const button = sourceButton(source.id, null, mail => openReminder(mail, null, { ...draft, anchors: source.anchors }));
+      if (button) {
+        const row = make("li");
+        row.append(button);
+        links.append(row);
+      }
+    }
+    card.append(links);
+  } else {
+    const [source] = sources;
+    const original = sourceButton(source.id);
+    const mail = state.messages.find(item => item.id === source.id);
+    if (original && mail) {
+      card.append(original);
+      const button = make("button", "secondary remind-from-answer", "Проверить и сохранить");
+      button.type = "button";
+      button.addEventListener("click", () => openReminder(mail, null, { ...draft, anchors: source.anchors }));
+      const actions = make("div", "chat-actions");
+      actions.append(button);
+      card.append(actions);
+    }
+  }
+  return card;
 }
 
 function renderTurn(turn) {
@@ -198,6 +270,7 @@ function renderTurn(turn) {
     return card;
   }
   const { result, evidence, count } = turn;
+  if (result?.conditionalDraft) return renderConditionalDraft(card, result.conditionalDraft);
   if (turn.routing?.router === "jev") {
     const path = turn.routing.route === "search" ? "Поиск" : "Ассистент";
     card.append(make("p", "answer-label", "Jev · " + path));
@@ -332,7 +405,8 @@ function renderFilters() {
 
 function render() {
   const rows = visibleMessages();
-  const fromHistory = state.view === "ask" && document.body.classList.contains("source-open");
+  const proof = state.openedConfirmation?.mail;
+  const fromHistory = (state.view === "ask" && document.body.classList.contains("source-open")) || Boolean(proof);
   if (!fromHistory && !rows.some(mail => mail.id === state.selected)) state.selected = rows[0]?.id ?? null;
   if (rows.findIndex(mail => mail.id === state.selected) >= state.limit) state.selected = rows[0]?.id ?? null;
   const scroll = messageList.scrollTop;
@@ -344,19 +418,22 @@ function render() {
     button.type = "button";
     button.dataset.message = mail.id;
     button.setAttribute("aria-current", String(selected));
+    const conditional = state.folder === "reminders" && conditionFor(mail);
     const sender = make("span", "sender");
     if (unread) {
       const mark = make("span", "unread-mark");
       mark.title = "Непрочитанное";
       sender.append(mark);
     }
-    sender.append(make("span", "clip", mail.sender || mail.category || "Письмо"));
+    sender.append(make("span", "clip", conditional ? "Условное напоминание" : mail.sender || mail.category || "Письмо"));
     const time = make("time", "", mail.date === state.mailbox.asOf && mail.time ? mail.time : when(mail.date, shortDate));
     if (mail.date) time.dateTime = mail.date;
-    const reminder = state.folder === "reminders" ? reminderFor(mail) : null;
-    const snippet = reminder ? reminderText(reminder) : (mail.body || "").replace(/\s+/gu, " ");
-    button.append(avatar(mail), sender, time, highlighted(make("span", "subject"), mail.subject || "Без темы"),
-      highlighted(make("span", "snippet" + (reminder ? " reminder-row" : "")), snippet));
+    const reminder = state.folder === "reminders" && reminderFor(mail);
+    const snippet = conditional ? conditionText(conditional) : reminder ? reminderText(reminder) :
+      (mail.body || "").replace(/\s+/gu, " ");
+    button.append(avatar(mail), sender, time,
+      highlighted(make("span", "subject"), conditional ? conditional.condition : mail.subject || "Без темы"),
+      highlighted(make("span", "snippet" + (reminder || conditional ? " reminder-row" : "")), snippet));
     return button;
   });
   if (rows.length > state.limit) {
@@ -391,7 +468,7 @@ function render() {
   byId("show-answer").hidden = state.view !== "ask";
   byId("ask-results").hidden = state.view !== "search" || !state.context?.ids.length;
   document.body.classList.toggle("asking", state.view === "ask");
-  document.querySelector('[data-folder="reminders"]').hidden = state.reminders === null;
+  document.querySelector('[data-folder="reminders"]').hidden = state.reminders === null && !state.supportsConditions;
   updateReminderCount();
   for (const button of document.querySelectorAll("[data-folder]")) {
     const active = state.view === "search" && !state.applied && button.dataset.folder === state.folder;
@@ -403,7 +480,7 @@ function render() {
     button.setAttribute("aria-pressed", String(state.mode === button.dataset.mode));
   }
   const index = rows.findIndex(mail => mail.id === state.selected);
-  const selected = rows[index] ?? (fromHistory ? state.messages.find(mail => mail.id === state.selected) : null);
+  const selected = rows[index] ?? proof ?? (fromHistory ? state.messages.find(mail => mail.id === state.selected) : null);
   renderReader(selected, index, rows.length);
   if (state.live && selected && (state.view === "search" || fromHistory)) loadLetter(selected);
   renderAnswer();
@@ -420,7 +497,8 @@ function jsonRequest(method, data) {
 }
 
 function updateReminderCount() {
-  byId("reminder-count").textContent = state.reminders?.filter(item => Date.parse(item.dueAt) <= Date.now()).length || "";
+  const ordinary = state.reminders?.filter(item => Date.parse(item.dueAt) <= Date.now()).length || 0;
+  byId("reminder-count").textContent = (ordinary + state.conditions.filter(item => item.status === "due").length) || "";
 }
 
 async function refreshReminders() {
@@ -432,6 +510,21 @@ async function refreshReminders() {
     render();
   } catch {
     // A plain static preview can run the search without a reminder store.
+  }
+}
+
+async function refreshConditions() {
+  if (!state.supportsConditions) return;
+  const version = ++state.conditionVersion;
+  const params = new URLSearchParams({ mailbox: state.mailbox.id, asOf: state.snapshot });
+  try {
+    const data = await api("conditional-reminders?" + params, undefined, 35_000);
+    if (state.conditionVersion === version) {
+      state.conditions = data.reminders;
+      render();
+    }
+  } catch {
+    if (state.conditionVersion === version && state.folder === "reminders") notify("Не удалось проверить условия.");
   }
 }
 
@@ -449,15 +542,38 @@ function proposedTime(proposal) {
   return date > new Date() ? date : null;
 }
 
-function openReminder(mail, proposed = null) {
+function openReminder(mail, proposed = null, draft = null) {
   const item = reminderFor(mail);
+  const savedCondition = conditionFor(mail);
+  const conditional = draft || (!proposed && savedCondition);
   state.reminderMail = mail;
   byId("reminder-subject").textContent = mail.subject || "Без темы";
-  byId("reminder-time").value = localDateTime(proposed ?? (item ? new Date(item.dueAt) : new Date(Date.now() + 60 * 60_000)));
-  byId("reminder-zone").textContent = "Часовой пояс " + Intl.DateTimeFormat().resolvedOptions().timeZone;
-  byId("remove-reminder").hidden = !item;
+  byId("condition-toggle").hidden = !state.supportsConditions;
+  byId("reminder-conditional").checked = Boolean(conditional);
+  byId("reminder-condition").value = conditional?.condition ?? "";
+  byId("condition-anchors").value = (savedCondition?.anchors ?? conditional?.anchors ??
+    state.details.get(mail.id)?.conditionAnchors ?? []).join(", ");
+  setReminderMode(Boolean(conditional), proposed ?? (item ? new Date(item.dueAt) : null));
+  if (draft) byId("reminder-time").value = draft.dueAt ?? "";
   byId("reminder-error").hidden = true;
   byId("reminder-dialog").showModal();
+}
+
+function setReminderMode(conditional, ordinaryTime = null) {
+  const mail = state.reminderMail;
+  const item = conditional ? conditionFor(mail) : reminderFor(mail);
+  byId("condition-fields").hidden = !conditional;
+  byId("reminder-condition").required = conditional;
+  byId("reminder-presets").hidden = conditional;
+  byId("remove-reminder").hidden = !item;
+  if (conditional) {
+    const tomorrow = new Date(Date.parse(state.snapshot + "T12:00Z") + 86_400_000).toISOString().slice(0, 10);
+    byId("reminder-time").value = item?.dueAt ?? (tomorrow + "T09:00");
+    byId("reminder-zone").textContent = "Дата берётся из архива. Подтверждение проверяется в новых письмах.";
+  } else {
+    byId("reminder-time").value = localDateTime(ordinaryTime ?? (item ? new Date(item.dueAt) : new Date(Date.now() + 60 * 60_000)));
+    byId("reminder-zone").textContent = "Часовой пояс " + Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
 }
 
 let noticeTimer;
@@ -472,20 +588,36 @@ function notify(text) {
 
 async function saveReminder(remove = false) {
   const mail = state.reminderMail;
-  const time = new Date(byId("reminder-time").value);
+  const rawTime = byId("reminder-time").value;
+  const time = new Date(rawTime);
+  const conditional = state.supportsConditions && byId("reminder-conditional").checked;
   const error = byId("reminder-error");
-  if (!remove && (!Number.isFinite(time.getTime()) || time.getTime() <= Date.now())) {
-    error.textContent = "Выберите время в будущем.";
+  if (!remove && (!Number.isFinite(time.getTime()) || (conditional ? rawTime.slice(0, 10) <= state.snapshot : time.getTime() <= Date.now()))) {
+    error.textContent = conditional ? "Выберите дату после текущего среза архива." : "Выберите время в будущем.";
     error.hidden = false;
     return;
   }
   const controls = [...byId("reminder-form").querySelectorAll("button")];
   controls.forEach(button => { button.disabled = true; });
   const data = { mailbox: mail.mailbox, messageId: mail.id };
-  if (!remove) data.dueAt = time.toISOString();
+  if (!remove) data.dueAt = conditional ? rawTime : time.toISOString();
+  if (conditional) {
+    data.asOf = state.snapshot;
+    data.condition = byId("reminder-condition").value.trim();
+    data.anchors = byId("condition-anchors").value.split(",").map(value => value.trim()).filter(Boolean);
+    if (!remove && (!data.condition || data.anchors.length > 6 || data.anchors.some(value => value.length < 2 || value.length > 100))) {
+      error.textContent = "Укажите факт и до шести ключей длиной от 2 до 100 символов.";
+      error.hidden = false;
+      controls.forEach(button => { button.disabled = false; });
+      return;
+    }
+  }
   try {
-    const result = await api("reminders", jsonRequest(remove ? "DELETE" : "PUT", data));
-    if (state.mailbox.id === mail.mailbox) state.reminders = result.reminders;
+    const result = await api(conditional ? "conditional-reminders" : "reminders", jsonRequest(remove ? "DELETE" : "PUT", data));
+    if (state.mailbox.id === mail.mailbox) {
+      if (conditional) refreshConditions();
+      else state.reminders = result.reminders;
+    }
     byId("reminder-dialog").close();
     render();
     notify(remove ? "Напоминание удалено" : "Напоминание сохранено");
@@ -533,9 +665,11 @@ function resetSearch() {
   closeReader();
 }
 function closeReader() {
+  state.openedConfirmation = null;
   document.body.classList.remove("reader-open", "source-open", "answer-open");
 }
 function openMessage(mail, fromCitation = false) {
+  if (state.openedConfirmation?.mail.id !== mail.id) state.openedConfirmation = null;
   if (state.selected !== mail.id) letter.scrollTop = 0;
   state.selected = mail.id;
   state.fromCitation = fromCitation;
@@ -567,10 +701,12 @@ function showExamples() {
   }));
 }
 async function selectMailbox(id, asOf) {
+  const stayInReminders = state.folder === "reminders" && state.mailbox.id === id && asOf;
   resetSearch();
   setMenu(false);
-  state.folder = "inbox";
+  state.folder = stayInReminders ? "reminders" : "inbox";
   state.reminders = null;
+  state.conditions = [];
   state.mailbox = state.mailboxes.find(mailbox => mailbox.id === id);
   state.snapshot = asOf || state.mailbox.asOf;
   byId("account-mark").textContent = state.mailbox.initials;
@@ -578,6 +714,7 @@ async function selectMailbox(id, asOf) {
   byId("snapshot-date").value = state.snapshot;
   showExamples();
   refreshReminders();
+  refreshConditions();
   if (!state.live) {
     state.messages = demoMessages.filter(mail => mail.mailbox === id);
     render();
@@ -626,10 +763,13 @@ async function search({ followup = false } = {}) {
   const autoRoute = mode === "auto" && query ? (ask ? "agent" : "search") : "";
   const plan = planQuestion(query, state.snapshot, [...new Set(state.messages.map(mail => mail.sender).filter(Boolean))], state.filters);
   const previous = useContext ? state.context : null;
-  const explicitNewScope = plan.ids.length && plan.ids.some(id => !previous?.orderIds.includes(id));
+  const previousIds = new Set(previous?.orderIds.map(id => id.toLowerCase()));
+  const explicitNewScope = plan.ids.some(id => !previousIds.has(id.toLowerCase()));
   const newSearch = mode === "auto" && !ask && !continuation
     && /^(?:найди|покажи|выведи|перечисли|подбери)\s/iu.test(query);
   const scope = previous && !explicitNewScope && !newSearch ? previous : null;
+  const focusedId = useContext && !explicitNewScope && document.body.classList.contains("source-open")
+    ? state.selected : null;
   const filters = scope?.filters ?? (mode === "search" ? state.filters : plan.filters);
   const orderIds = plan.ids.length ? plan.ids : scope?.orderIds ?? [];
   const turn = { query, pending: true, evidence: [] };
@@ -660,7 +800,7 @@ async function search({ followup = false } = {}) {
     if (agent) {
       const context = scope ? [...new Set([scope.root, scope.latest])].filter(Boolean) : [];
       result = await api("ask", jsonRequest("POST", {
-        ...request, question: query, context, autoRoute, sourceIds: scope?.ids ?? [],
+        ...request, question: query, context, autoRoute, sourceIds: scope?.ids ?? [], focusedId,
       }), 120_000);
     } else if (scope?.ids.length) {
       result = { ids: scope.ids, date: scope.date };
@@ -753,6 +893,7 @@ byId("reminder-form").addEventListener("submit", event => {
   event.preventDefault();
   saveReminder();
 });
+byId("reminder-conditional").addEventListener("change", event => setReminderMode(event.target.checked));
 byId("remove-reminder").addEventListener("click", () => saveReminder(true));
 byId("remind").addEventListener("click", () => {
   const mail = selectedMessage();
@@ -873,7 +1014,13 @@ messageList.addEventListener("click", event => {
   if (mail) openMessage(mail);
 });
 byId("back").addEventListener("click", () => {
+  const opening = state.openedConfirmation;
   closeReader();
+  if (opening) {
+    const origin = state.conditions.find(item => item.message.id === opening.origin)?.message;
+    if (origin) openMessage(origin, opening.fromCitation);
+    return;
+  }
   if (state.view === "ask" && state.fromCitation) {
     if (matchMedia("(max-width: 820px)").matches) document.body.classList.add("answer-open");
     renderAnswer();
@@ -921,6 +1068,7 @@ try {
   if (payload.mailboxes?.length && payload.engine) {
     state.live = true;
     state.serverAssistant = payload.assistant === true;
+    state.supportsConditions = payload.conditionalReminders === true;
     state.mailboxes = payload.mailboxes;
     byId("source-label").textContent = "Корпус хакатона";
     byId("today").hidden = true;

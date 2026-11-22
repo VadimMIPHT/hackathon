@@ -201,6 +201,9 @@ class MailAssistant:
                 "UPDATE assistant_budget SET used = used + 1 WHERE name = ? AND used < ?", (name, self.limit if name == "deepseek" else 100),
             ).rowcount == 1
 
+    def key(self) -> str:
+        return os.environ.get("OPENROUTER_API_KEY", "") if self.use_env else read_key(self.key_file)
+
     def answer(
         self, question: str, request: dict, search: Callable[[dict, str], dict], get_document: Callable[[str], dict],
     ) -> dict:
@@ -209,7 +212,7 @@ class MailAssistant:
         local_request = {**request, "query": query}
         context_questions = request.get("context", [])
         topic = "\n".join([*context_questions, question])
-        key = os.environ.get("OPENROUTER_API_KEY", "") if self.use_env else read_key(self.key_file)
+        key = self.key()
         scoped = bool(request.get("sourceIds"))
         action_only = scoped and bool(re.match(
             r"^\s*(?:тогда\s+|а\s+)?(?:напомни|подготовь|создай|составь|напиши|поставь)(?!\w)", question, re.I,
