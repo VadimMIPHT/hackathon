@@ -16,13 +16,16 @@ from socketserver import ThreadingMixIn, UnixStreamServer
 from threading import Lock
 from urllib.parse import parse_qs, urlencode, urlsplit
 
+from smartmail.engine import SearchEngine
+from smartmail.io import Document as SearchDocument
+
 from mail_search.assistant import MailAssistant
 from mail_search.conditional import (
     ConditionalReminders, MAX_CANDIDATES, confirm, contains_anchors, default_anchors, reminder_draft,
 )
 from mail_search.dataset import Dataset, Document, Query, load_archive
 from mail_search.reranker_data import documents_by_mailbox
-from mail_search.retrieval import BM25, CALENDAR_DATE, YESTERDAY, day_from_query, eligible_indices, fields, searchable_text
+from mail_search.retrieval import CALENDAR_DATE, YESTERDAY, day_from_query, eligible_indices, fields, searchable_text
 
 LOGGER = logging.getLogger(__name__)
 SENDER_HEADER = re.compile(r"\A\s*(?:от|отправитель)[ \t]*:[ \t]*([^\r\n]*)\r?\n", re.IGNORECASE)
@@ -118,7 +121,10 @@ class ArchiveSearch:
         boxes = documents_by_mailbox(dataset)
         self.boxes = {box: sorted(docs, key=lambda doc: (doc.received or date.min, doc.doc_id), reverse=True)
                       for box, docs in sorted(boxes.items())}
-        self.lexical = {box: BM25(docs) for box, docs in self.boxes.items()}
+        self.lexical = SearchEngine([
+            SearchDocument(doc.doc_id, doc.mailbox, doc.text, doc.received)
+            for doc in dataset.documents.values()
+        ], idf_mode="local")
         self.neural = neural
         self.upstream_port = upstream_port
         self.reminders_db = reminders_db
@@ -161,7 +167,7 @@ class ArchiveSearch:
     def search(self, request: dict, *, day_text: str | None = None) -> dict:
         mailbox = request["mailbox"]
         text = request["query"]
-        mode = request["mode"]
+        mode = request.get("mode", "lexical")
         if not isinstance(text, str) or len(text.strip()) > 500:
             raise ValueError("Invalid query length")
         if mode not in ("semantic", "lexical"):
@@ -170,7 +176,6 @@ class ArchiveSearch:
         query = Query("web", mailbox, text.strip(), as_of)
         date_query = query if day_text is None else Query("web", mailbox, day_text, as_of)
         docs = self.boxes[mailbox]
-        eligible = eligible_indices(docs, date_query, use_query_day=True)
         filters = request.get("filters", {})
         ids = request.get("orderIds", [])
         if not isinstance(filters, dict) or not isinstance(ids, list) or len(ids) > 16:
@@ -186,18 +191,34 @@ class ArchiveSearch:
             raise ValueError("Invalid search period")
         if not query.text and not (sender or start or end or ids):
             raise ValueError("Empty search")
-        if start or end:
-            eligible = [i for i in eligible if docs[i].received is not None
-                        and (not start or docs[i].received >= start)
-                        and (not end or docs[i].received <= end)]
-        if sender:
-            initials = sender.casefold().replace("ё", "е")
-            eligible = [i for i in eligible if (header := SENDER_HEADER.match(docs[i].text))
-                        and initials in header[1].casefold().replace("ё", "е")]
-        if ids:
-            alternatives = "|".join(ids)
-            exact = re.compile(rf"(?<!\w)(?:{alternatives})(?!\w)", re.I)
-            eligible = [i for i in eligible if exact.search(docs[i].text)]
+        initials = sender.casefold().replace("ё", "е")
+
+        def matches_filters(doc: SearchDocument) -> bool:
+            if start or end:
+                if doc.date is None or (start and doc.date < start) or (end and doc.date > end):
+                    return False
+            if initials:
+                header = SENDER_HEADER.match(doc.text)
+                if not header or initials not in header[1].casefold().replace("ё", "е"):
+                    return False
+            return not ids or any(contains_anchors(doc.text, [reference]) for reference in ids)
+
+        if mode == "lexical":
+            result = self.lexical.search(
+                query.text, mailbox, as_of, TOP_K, date_text=day_text,
+                candidate_filter=matches_filters if start or end or sender or ids else None,
+            )
+            ranked_ids = [hit.doc_id for hit in result.hits]
+            return {
+                "ids": ranked_ids, "date": result.target_date.isoformat() if result.target_date else None,
+                "dateEnd": result.target_end.isoformat() if result.target_end else None,
+                "messages": [present(self.dataset.documents[doc_id]) for doc_id in ranked_ids],
+            }
+
+        eligible = [
+            i for i in eligible_indices(docs, date_query, use_query_day=True)
+            if matches_filters(SearchDocument(docs[i].doc_id, mailbox, docs[i].text, docs[i].received))
+        ]
         archive_reference = any(value.upper().startswith("SYN-") for value in ids)
         if self.upstream_port and query.text and mode == "semantic" and not archive_reference:
             retrieval_text = query.text
@@ -212,12 +233,10 @@ class ArchiveSearch:
             })
         if not query.text or archive_reference and self.upstream_port:
             ranked_ids = [docs[i].doc_id for i in eligible[:TOP_K]]
-        elif mode == "semantic":
+        else:
             if self.neural is None:
                 raise ValueError("Semantic search is disabled")
             ranked_ids = self.neural.search(query, docs, eligible)
-        else:
-            ranked_ids = self.lexical[mailbox].rank(query.text, eligible, TOP_K)
         day = day_from_query(date_query)
         return {
             "ids": ranked_ids, "date": day.isoformat() if day else None,
@@ -323,17 +342,12 @@ class ArchiveSearch:
                     and start <= doc.received <= end and contains_anchors(doc.text, anchors)]
         if len(eligible) <= MAX_CANDIDATES:
             return [docs[i] for i in reversed(eligible)]
-        ranked = self.lexical[source.mailbox].rank(condition, eligible, MAX_CANDIDATES)
-        if not anchors and (self.neural or self.upstream_port):
-            try:
-                result = self.search({"mailbox": source.mailbox, "query": condition, "asOf": end.isoformat(),
-                                      "filters": {"from": start.isoformat()}, "mode": "semantic"}, day_text="")
-            except RemoteError:
-                result = {"ids": []}
-            eligible_ids = {docs[i].doc_id for i in eligible}
-            ranked = [doc_id for doc_id in result["ids"] if doc_id in eligible_ids][:MAX_CANDIDATES] + ranked
-        shortlist = [*ranked, *(docs[i].doc_id for i in eligible)]
-        return [self.dataset.documents[doc_id] for doc_id in list(dict.fromkeys(shortlist))[:MAX_CANDIDATES]]
+        eligible_ids = {docs[i].doc_id for i in eligible}
+        result = self.lexical.search(
+            condition, source.mailbox, end, MAX_CANDIDATES, use_date_filter=False,
+            candidate_filter=lambda doc: doc.doc_id in eligible_ids,
+        )
+        return [self.dataset.documents[hit.doc_id] for hit in result.hits]
 
     def conditional_reminders(self, mailbox: str, as_of: date) -> dict:
         if not self.conditional or mailbox not in self.boxes:
@@ -404,7 +418,8 @@ class Handler(SimpleHTTPRequestHandler):
                 case "/api/mailboxes":
                     payload = {
                         "mailboxes": list(self.app.profiles.values()),
-                        "engine": "e5-bge" if self.app.neural or self.app.upstream_port else "bm25",
+                        "engine": "bm25-local-idf",
+                        "semanticSearch": bool(self.app.neural or self.app.upstream_port),
                         "assistant": True,
                         "conditionalReminders": self.app.conditional is not None,
                     }
@@ -510,11 +525,12 @@ def main() -> None:
         parser.error("Select one OpenRouter key source")
     if args.upstream_port and not (0 < args.upstream_port < 65536 and args.upstream_port != args.port):
         parser.error("--upstream-port must be a different local TCP port")
-    if not (args.lexical_only or args.upstream_port or all((args.e5_model, args.bge_model, args.bge_weights))):
-        parser.error("Supply --e5-model, --bge-model and --bge-weights, or select --lexical-only")
+    model_paths = (args.e5_model, args.bge_model, args.bge_weights)
+    if any(model_paths) and not all(model_paths):
+        parser.error("Supply all of --e5-model, --bge-model and --bge-weights to enable E5 + BGE")
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     dataset = load_archive(archive)
-    neural = None if args.lexical_only or args.upstream_port else NeuralRanker(args)
+    neural = NeuralRanker(args) if all(model_paths) and not (args.lexical_only or args.upstream_port) else None
     app = ArchiveSearch(
         dataset, neural, args.reminders_db, args.openrouter_key_file, args.assistant_limit,
         use_openrouter_env=args.openrouter_env, upstream_port=args.upstream_port,

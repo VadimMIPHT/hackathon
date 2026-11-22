@@ -26,7 +26,7 @@ const icon = name => {
 
 const state = {
   live: false, mailboxes: demoMailboxes, mailbox: demoMailboxes[0], messages: [],
-  folder: "inbox", mode: "semantic", query: "", results: null, date: null, selected: null,
+  folder: "inbox", mode: "semantic", query: "", results: null, date: null, dateEnd: null, selected: null,
   version: 0, pending: false, error: "", loadingMailbox: false, limit: PAGE_SIZE,
   mailboxVersion: 0, details: new Map(), view: "search", applied: false,
   filters: {}, appliedFilters: {}, orderIds: [], reminders: null,
@@ -463,7 +463,8 @@ function render() {
   byId("breadcrumb").textContent = state.view === "ask" ? "Спросить" : state.applied ? "Поиск" : folderNames[state.folder];
   byId("unread-count").textContent = state.messages.filter(mail => flag(mail, "unread") && !flag(mail, "archived")).length || "";
   byId("date-filter").hidden = !state.date;
-  byId("date-filter").lastElementChild.textContent = when(state.date, shortDate);
+  const dates = state.dateEnd && state.dateEnd !== state.date ? [state.date, state.dateEnd] : [state.date];
+  byId("date-filter").lastElementChild.textContent = dates.map(day => when(day, shortDate)).join(" – ");
   byId("clear").hidden = !queryInput.value && !state.applied;
   byId("show-answer").hidden = state.view !== "ask";
   byId("ask-results").hidden = state.view !== "search" || !state.context?.ids.length;
@@ -656,6 +657,7 @@ function resetSearch() {
   byId("chat-query").value = "";
   state.results = null;
   state.date = null;
+  state.dateEnd = null;
   state.pending = false;
   state.error = "";
   state.limit = PAGE_SIZE;
@@ -784,6 +786,7 @@ async function search({ followup = false } = {}) {
   state.selected = null;
   state.results = null;
   state.date = scope?.date ?? null;
+  state.dateEnd = scope?.dateEnd ?? null;
   state.pending = true;
   state.error = "";
   closeReader();
@@ -817,7 +820,9 @@ async function search({ followup = false } = {}) {
     }
     state.results = result.ids;
     state.date = result.date ?? scope?.date ?? null;
-    state.context = { root: scope?.root ?? query, latest: query, ids: result.ids, orderIds, filters, date: state.date };
+    state.dateEnd = result.dateEnd ?? scope?.dateEnd ?? null;
+    state.context = { root: scope?.root ?? query, latest: query, ids: result.ids, orderIds, filters,
+      date: state.date, dateEnd: state.dateEnd };
     turn.count = result.ids.length;
     turn.routing = result.routing;
     if (result.answer) {
@@ -1075,10 +1080,11 @@ try {
     byId("snapshot").hidden = false;
     const semantic = document.querySelector('[data-mode="semantic"]');
     semantic.title = "Векторный поиск E5 и переранжирование BGE";
-    if (payload.engine === "bm25") {
+    if (payload.engine === "bm25-local-idf" || payload.engine === "bm25") {
       state.mode = "lexical";
-      semantic.hidden = true;
-      byId("search-description").textContent = "Введите слова из темы или текста письма.";
+      semantic.hidden = !payload.semanticSearch;
+      document.querySelector('[data-mode="lexical"]').title = "BM25 с локальным IDF";
+      byId("ranking-mode").hidden = !payload.semanticSearch;
     }
   }
 } catch {
