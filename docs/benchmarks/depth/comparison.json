@@ -1,0 +1,195 @@
+{
+  "config": {
+    "archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+    "split": "val",
+    "split_seed": 42,
+    "e5": {
+      "repo": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "max_length": 256,
+      "document_batch_size": 32,
+      "model_dtype": "fp16",
+      "pooling_dtype": "fp32"
+    },
+    "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+    "e5_candidates_sha256": "1a9b78a1dbc1feafddabe132c67d381e44175ac7033227a30adfee4644401938",
+    "code_base_commit": "0f47058c0da551eedf9270b3c7eb513d624dac3d",
+    "source_sha256": {
+      "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+      "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+      "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+      "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+      "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+      "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+      "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+      "reranker.py": "88a19600129a15c575121b0a4b17dd8e6a6889bc27e3c59144911ab1075e5efa",
+      "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+      "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+      "zero_shot.py": "8a4b49180de495f0e10bd6267566ff2164802eea68a2e2019b052e049d29bbb5"
+    },
+    "filters": "same mailbox and requested day, accessible at query date",
+    "tie_break": "doc_id"
+  },
+  "model_results": {
+    "BGE после дообучения на возвратах": {
+      "file": "bge-returns.json",
+      "sha256": "b65573073a4b3ed0af818b5f07d4d3ef17a077f97bac4be658c6ca6c46e6640b",
+      "depths": {
+        "20": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9781401782430096,
+          "recall@10": 0.849411987017029,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "50": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 1.0,
+          "recall@10": 0.8737217109065849,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "all": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 1.0,
+          "recall@10": 0.8737217109065849,
+          "recall@50": 1.0,
+          "mrr@10_singleton": 1.0,
+          "p50_ms_offline": 587.8977626562119,
+          "p99_ms_offline": 1727.7975678443909
+        }
+      }
+    },
+    "RuBERT": {
+      "file": "rubert.json",
+      "sha256": "289092dd4cd8f8afb07822d6fafb39e70ab4507d02107e09dfb29349bc701c95",
+      "depths": {
+        "20": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9568549138485827,
+          "recall@10": 0.8315076030412165,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "50": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9353894371203625,
+          "recall@10": 0.833302209772798,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 0.8666666666666667
+        },
+        "all": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.8700629223215129,
+          "recall@10": 0.8072584589391312,
+          "recall@50": 0.9894179894179894,
+          "mrr@10_singleton": 0.85,
+          "p50_ms_offline": 473.5819548368454,
+          "p99_ms_offline": 1531.2520638108253
+        }
+      }
+    },
+    "Qwen3-Reranker-0.6B": {
+      "file": "qwen.json",
+      "sha256": "68f2b83484b79940a79af84b6cbcc459b71f1f812a01f31f42e64edf80fbf16e",
+      "depths": {
+        "20": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.96254572143985,
+          "recall@10": 0.8384520474856609,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "50": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9955677579550928,
+          "recall@10": 0.8714541372104397,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "all": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9779929843156384,
+          "recall@10": 0.8714541372104397,
+          "recall@50": 0.9971988795518207,
+          "mrr@10_singleton": 0.9,
+          "p50_ms_offline": 894.7371318936348,
+          "p99_ms_offline": 2732.7140644192696
+        }
+      }
+    },
+    "Готовый BGE": {
+      "file": "bge-frozen.json",
+      "sha256": "b2fa0b39d6662e9ca63264b41a21b06be64eff34dbeac84d9d51ae2cd3f71925",
+      "depths": {
+        "20": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.884159842835932,
+          "recall@10": 0.7470310346360767,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 0.8
+        },
+        "50": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.8815249244750007,
+          "recall@10": 0.7713407585256324,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 0.7
+        },
+        "all": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.8749992056064149,
+          "recall@10": 0.7713407585256324,
+          "recall@50": 0.8976190476190476,
+          "mrr@10_singleton": 0.7,
+          "p50_ms_offline": 533.6869731545448,
+          "p99_ms_offline": 1803.801454603672
+        }
+      }
+    },
+    "CatBoost с E5, BM25 и готовым BGE": {
+      "file": "catboost.json",
+      "sha256": "5113fc8f4109d646f7cc9cadf3741bf0154717f06367e2d61cedd2beb0fd69f6",
+      "depths": {
+        "20": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9728932734341351,
+          "recall@10": 0.8467664843715264,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "50": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9977826565339328,
+          "recall@10": 0.8737217109065849,
+          "recall@50": 0.981359210350807,
+          "mrr@10_singleton": 1.0
+        },
+        "all": {
+          "queries": 21,
+          "mailboxes": 2,
+          "ndcg@10": 0.9977826565339328,
+          "recall@10": 0.8737217109065849,
+          "recall@50": 1.0,
+          "mrr@10_singleton": 1.0,
+          "p50_ms_offline": 538.8252213597298,
+          "p99_ms_offline": 1836.3517597317696
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1941 @@
+{
+  "protocol": {
+    "original_archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+    "augmented_archive_sha256": "117387335ed56785fe3368e4fb039336a3cdac47cea1c4add91d52af6588e4fa",
+    "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+    "split_seed": 42,
+    "cohort": "added SYN-10PLUS queries only",
+    "date_modes": [
+      "frozen",
+      "date-aware"
+    ],
+    "top_k": 50,
+    "tie_break": "doc_id"
+  },
+  "environment": {
+    "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+    "source_sha256": {
+      "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+      "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+      "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+      "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+      "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+      "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+      "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+      "final_test.py": "bac1311f3b32f8f657d955e63589b1fb60fc2ba1d5da92be87b80638d59feb0f",
+      "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+      "friend_eval_data.py": "bbd4911f7a3e1a4f324bad07b25dd86858a86d46a6a3045448c35506a279d554",
+      "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+      "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+      "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+      "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+      "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+      "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+    },
+    "utc": "2026-11-21T11:51:13.329593+00:00",
+    "host": "maxim-HP-250-G8-Notebook-PC",
+    "python": "3.12.3"
+  },
+  "original_qrels": {
+    "preserved": 565,
+    "additional_positive": 16,
+    "additional_negative": 2062
+  },
+  "modes": {
+    "frozen": {
+      "summary": {
+        "queries": 40,
+        "mailboxes": 5,
+        "parsed_date_queries": 24,
+        "date_excluded_queries": 8,
+        "relevant_documents": 1143,
+        "as_of_documents": 40414,
+        "as_of_relevant": 1143,
+        "eligible_documents": 15271,
+        "eligible_relevant": 850,
+        "excluded_by_query_day": 293,
+        "eligible_relevant_at_most_top50": 805
+      },
+      "by_query_type": {
+        "date_range": {
+          "queries": 8,
+          "mailboxes": 4,
+          "parsed_date_queries": 8,
+          "date_excluded_queries": 8,
+          "relevant_documents": 431,
+          "as_of_documents": 12314,
+          "as_of_relevant": 431,
+          "eligible_documents": 298,
+          "eligible_relevant": 138,
+          "excluded_by_query_day": 293,
+          "eligible_relevant_at_most_top50": 133
+        },
+        "paraphrase": {
+          "queries": 32,
+          "mailboxes": 4,
+          "parsed_date_queries": 16,
+          "date_excluded_queries": 0,
+          "relevant_documents": 712,
+          "as_of_documents": 28100,
+          "as_of_relevant": 712,
+          "eligible_documents": 14973,
+          "eligible_relevant": 712,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 672
+        }
+      },
+      "by_mailbox_split": {
+        "test": {
+          "queries": 7,
+          "mailboxes": 1,
+          "parsed_date_queries": 6,
+          "date_excluded_queries": 3,
+          "relevant_documents": 148,
+          "as_of_documents": 10621,
+          "as_of_relevant": 148,
+          "eligible_documents": 1893,
+          "eligible_relevant": 113,
+          "excluded_by_query_day": 35,
+          "eligible_relevant_at_most_top50": 113
+        },
+        "train": {
+          "queries": 16,
+          "mailboxes": 2,
+          "parsed_date_queries": 9,
+          "date_excluded_queries": 2,
+          "relevant_documents": 667,
+          "as_of_documents": 14416,
+          "as_of_relevant": 667,
+          "eligible_documents": 6499,
+          "eligible_relevant": 482,
+          "excluded_by_query_day": 185,
+          "eligible_relevant_at_most_top50": 437
+        },
+        "val": {
+          "queries": 17,
+          "mailboxes": 2,
+          "parsed_date_queries": 9,
+          "date_excluded_queries": 3,
+          "relevant_documents": 328,
+          "as_of_documents": 15377,
+          "as_of_relevant": 328,
+          "eligible_documents": 6879,
+          "eligible_relevant": 255,
+          "excluded_by_query_day": 73,
+          "eligible_relevant_at_most_top50": 255
+        }
+      },
+      "by_mailbox": {
+        "box-2d28af4e4602": {
+          "queries": 7,
+          "mailboxes": 1,
+          "parsed_date_queries": 6,
+          "date_excluded_queries": 3,
+          "relevant_documents": 148,
+          "as_of_documents": 10621,
+          "as_of_relevant": 148,
+          "eligible_documents": 1893,
+          "eligible_relevant": 113,
+          "excluded_by_query_day": 35,
+          "eligible_relevant_at_most_top50": 113
+        },
+        "box-84bd433469cb": {
+          "queries": 6,
+          "mailboxes": 1,
+          "parsed_date_queries": 3,
+          "date_excluded_queries": 0,
+          "relevant_documents": 64,
+          "as_of_documents": 3878,
+          "as_of_relevant": 64,
+          "eligible_documents": 2070,
+          "eligible_relevant": 64,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 64
+        },
+        "box-a971835ab404": {
+          "queries": 16,
+          "mailboxes": 1,
+          "parsed_date_queries": 8,
+          "date_excluded_queries": 2,
+          "relevant_documents": 313,
+          "as_of_documents": 12375,
+          "as_of_relevant": 313,
+          "eligible_documents": 6757,
+          "eligible_relevant": 251,
+          "excluded_by_query_day": 62,
+          "eligible_relevant_at_most_top50": 251
+        },
+        "box-dfac33a7123c": {
+          "queries": 10,
+          "mailboxes": 1,
+          "parsed_date_queries": 6,
+          "date_excluded_queries": 2,
+          "relevant_documents": 603,
+          "as_of_documents": 10538,
+          "as_of_relevant": 603,
+          "eligible_documents": 4429,
+          "eligible_relevant": 418,
+          "excluded_by_query_day": 185,
+          "eligible_relevant_at_most_top50": 373
+        },
+        "box-f9410417c091": {
+          "queries": 1,
+          "mailboxes": 1,
+          "parsed_date_queries": 1,
+          "date_excluded_queries": 1,
+          "relevant_documents": 15,
+          "as_of_documents": 3002,
+          "as_of_relevant": 15,
+          "eligible_documents": 122,
+          "eligible_relevant": 4,
+          "excluded_by_query_day": 11,
+          "eligible_relevant_at_most_top50": 4
+        }
+      },
+      "per_query": [
+        {
+          "query_id": "SYN-10PLUS-001",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 862,
+          "as_of_relevant": 12,
+          "eligible_documents": 16,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-c520a90e0f715e6cd77d"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-002",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 862,
+          "as_of_relevant": 12,
+          "eligible_documents": 16,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-c520a90e0f715e6cd77d"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-003",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-10"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 1784,
+          "as_of_relevant": 21,
+          "eligible_documents": 23,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-004",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 21,
+          "as_of_documents": 1784,
+          "as_of_relevant": 21,
+          "eligible_documents": 1784,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-005",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-13"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 539,
+          "as_of_relevant": 11,
+          "eligible_documents": 59,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-41f5e484948f2ab2bfa5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-006",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 11,
+          "as_of_documents": 539,
+          "as_of_relevant": 11,
+          "eligible_documents": 539,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-41f5e484948f2ab2bfa5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-007",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-17"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 683,
+          "as_of_relevant": 11,
+          "eligible_documents": 39,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-bbc9bc678aba515467f5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-008",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 11,
+          "as_of_documents": 683,
+          "as_of_relevant": 11,
+          "eligible_documents": 683,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-bbc9bc678aba515467f5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-009",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 10,
+          "as_of_documents": 717,
+          "as_of_relevant": 10,
+          "eligible_documents": 717,
+          "eligible_relevant": 10,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 10,
+          "related_original_queries": [
+            "H-130688ab3eeb3b8dc034"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-010",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-19"
+          ],
+          "relevant_documents": 10,
+          "as_of_documents": 717,
+          "as_of_relevant": 10,
+          "eligible_documents": 33,
+          "eligible_relevant": 10,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 10,
+          "related_original_queries": [
+            "H-130688ab3eeb3b8dc034"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-011",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-21"
+          ],
+          "relevant_documents": 17,
+          "as_of_documents": 204,
+          "as_of_relevant": 17,
+          "eligible_documents": 82,
+          "eligible_relevant": 17,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 17,
+          "related_original_queries": [
+            "H-e78b25a116be82858185"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-012",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 17,
+          "as_of_documents": 204,
+          "as_of_relevant": 17,
+          "eligible_documents": 204,
+          "eligible_relevant": 17,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 17,
+          "related_original_queries": [
+            "H-e78b25a116be82858185"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-013",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-26"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 625,
+          "as_of_relevant": 21,
+          "eligible_documents": 85,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-d523a339e5767794ded5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-014",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 21,
+          "as_of_documents": 625,
+          "as_of_relevant": 21,
+          "eligible_documents": 625,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-d523a339e5767794ded5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-015",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-28"
+          ],
+          "relevant_documents": 18,
+          "as_of_documents": 753,
+          "as_of_relevant": 18,
+          "eligible_documents": 79,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-016",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 18,
+          "as_of_documents": 753,
+          "as_of_relevant": 18,
+          "eligible_documents": 753,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-017",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-29"
+          ],
+          "relevant_documents": 16,
+          "as_of_documents": 837,
+          "as_of_relevant": 16,
+          "eligible_documents": 49,
+          "eligible_relevant": 16,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 16,
+          "related_original_queries": [
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-018",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 16,
+          "as_of_documents": 837,
+          "as_of_relevant": 16,
+          "eligible_documents": 837,
+          "eligible_relevant": 16,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 16,
+          "related_original_queries": [
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-019",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-30"
+          ],
+          "relevant_documents": 14,
+          "as_of_documents": 905,
+          "as_of_relevant": 14,
+          "eligible_documents": 84,
+          "eligible_relevant": 14,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 14,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-020",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 14,
+          "as_of_documents": 905,
+          "as_of_relevant": 14,
+          "eligible_documents": 905,
+          "eligible_relevant": 14,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 14,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-021",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 18,
+          "as_of_documents": 975,
+          "as_of_relevant": 18,
+          "eligible_documents": 975,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-91635f29cd1535edaa65"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-022",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 18,
+          "as_of_documents": 975,
+          "as_of_relevant": 18,
+          "eligible_documents": 975,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-91635f29cd1535edaa65"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-023",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-02-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 980,
+          "as_of_relevant": 12,
+          "eligible_documents": 70,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-858ce7fee338506cefbe"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-024",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 12,
+          "as_of_documents": 980,
+          "as_of_relevant": 12,
+          "eligible_documents": 980,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-858ce7fee338506cefbe"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-025",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-23"
+          ],
+          "relevant_documents": 42,
+          "as_of_documents": 950,
+          "as_of_relevant": 42,
+          "eligible_documents": 42,
+          "eligible_relevant": 42,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 42,
+          "related_original_queries": [
+            "H-746cb14175b115e23160"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-026",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 42,
+          "as_of_documents": 950,
+          "as_of_relevant": 42,
+          "eligible_documents": 950,
+          "eligible_relevant": 42,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 42,
+          "related_original_queries": [
+            "H-746cb14175b115e23160"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-027",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-25"
+          ],
+          "relevant_documents": 65,
+          "as_of_documents": 1070,
+          "as_of_relevant": 65,
+          "eligible_documents": 65,
+          "eligible_relevant": 65,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-028",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 65,
+          "as_of_documents": 1070,
+          "as_of_relevant": 65,
+          "eligible_documents": 1070,
+          "eligible_relevant": 65,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-029",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 55,
+          "as_of_documents": 1083,
+          "as_of_relevant": 55,
+          "eligible_documents": 1083,
+          "eligible_relevant": 55,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-030",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-26"
+          ],
+          "relevant_documents": 55,
+          "as_of_documents": 1083,
+          "as_of_relevant": 55,
+          "eligible_documents": 55,
+          "eligible_relevant": 55,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-031",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-27"
+          ],
+          "relevant_documents": 13,
+          "as_of_documents": 1083,
+          "as_of_relevant": 13,
+          "eligible_documents": 13,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-d5db790a049dde6f4e92"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-032",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [],
+          "relevant_documents": 13,
+          "as_of_documents": 1083,
+          "as_of_relevant": 13,
+          "eligible_documents": 1083,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-d5db790a049dde6f4e92"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-033",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-08"
+          ],
+          "relevant_documents": 13,
+          "as_of_documents": 1761,
+          "as_of_relevant": 13,
+          "eligible_documents": 8,
+          "eligible_relevant": 5,
+          "excluded_by_query_day": 8,
+          "eligible_relevant_at_most_top50": 5,
+          "related_original_queries": [
+            "H-86c5f97dafded9493988",
+            "H-fce276dacbc2c7ffdb1a"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-034",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-10"
+          ],
+          "relevant_documents": 41,
+          "as_of_documents": 1784,
+          "as_of_relevant": 41,
+          "eligible_documents": 23,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 20,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-86c5f97dafded9493988",
+            "H-c09c0c6f82df8a016912",
+            "H-d60cf706badd91a4e721",
+            "H-fce276dacbc2c7ffdb1a"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-035",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-10"
+          ],
+          "relevant_documents": 28,
+          "as_of_documents": 1784,
+          "as_of_relevant": 28,
+          "eligible_documents": 23,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 7,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912",
+            "H-d60cf706badd91a4e721"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-036",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-01-29"
+          ],
+          "relevant_documents": 34,
+          "as_of_documents": 837,
+          "as_of_relevant": 34,
+          "eligible_documents": 49,
+          "eligible_relevant": 16,
+          "excluded_by_query_day": 18,
+          "eligible_relevant_at_most_top50": 16,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249",
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-037",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-02-02"
+          ],
+          "relevant_documents": 47,
+          "as_of_documents": 980,
+          "as_of_relevant": 47,
+          "eligible_documents": 5,
+          "eligible_relevant": 3,
+          "excluded_by_query_day": 44,
+          "eligible_relevant_at_most_top50": 3,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7",
+            "H-858ce7fee338506cefbe",
+            "H-91635f29cd1535edaa65",
+            "H-d6683f03cca44a37eddb"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-038",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-09-26"
+          ],
+          "relevant_documents": 120,
+          "as_of_documents": 1083,
+          "as_of_relevant": 120,
+          "eligible_documents": 55,
+          "eligible_relevant": 55,
+          "excluded_by_query_day": 65,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc",
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-039",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-09-27"
+          ],
+          "relevant_documents": 133,
+          "as_of_documents": 1083,
+          "as_of_relevant": 133,
+          "eligible_documents": 13,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 120,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc",
+            "H-d5db790a049dde6f4e92",
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-040",
+          "mailbox": "box-f9410417c091",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2027-11-30"
+          ],
+          "relevant_documents": 15,
+          "as_of_documents": 3002,
+          "as_of_relevant": 15,
+          "eligible_documents": 122,
+          "eligible_relevant": 4,
+          "excluded_by_query_day": 11,
+          "eligible_relevant_at_most_top50": 4,
+          "related_original_queries": [
+            "H-28caa9ba8ebb01e3a98e",
+            "H-370c651816c078415a7d",
+            "H-7344cf0d5bc0d9edb0c5",
+            "H-d307d39328da45a87643",
+            "H-e0a89c82eabee234cdd1"
+          ]
+        }
+      ]
+    },
+    "date-aware": {
+      "summary": {
+        "queries": 40,
+        "mailboxes": 5,
+        "parsed_date_queries": 40,
+        "date_excluded_queries": 0,
+        "relevant_documents": 1143,
+        "as_of_documents": 40414,
+        "as_of_relevant": 1143,
+        "eligible_documents": 3129,
+        "eligible_relevant": 1143,
+        "excluded_by_query_day": 0,
+        "eligible_relevant_at_most_top50": 950
+      },
+      "by_query_type": {
+        "date_range": {
+          "queries": 8,
+          "mailboxes": 4,
+          "parsed_date_queries": 8,
+          "date_excluded_queries": 0,
+          "relevant_documents": 431,
+          "as_of_documents": 12314,
+          "as_of_relevant": 431,
+          "eligible_documents": 1405,
+          "eligible_relevant": 431,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 278
+        },
+        "paraphrase": {
+          "queries": 32,
+          "mailboxes": 4,
+          "parsed_date_queries": 32,
+          "date_excluded_queries": 0,
+          "relevant_documents": 712,
+          "as_of_documents": 28100,
+          "as_of_relevant": 712,
+          "eligible_documents": 1724,
+          "eligible_relevant": 712,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 672
+        }
+      },
+      "by_mailbox_split": {
+        "test": {
+          "queries": 7,
+          "mailboxes": 1,
+          "parsed_date_queries": 7,
+          "date_excluded_queries": 0,
+          "relevant_documents": 148,
+          "as_of_documents": 10621,
+          "as_of_relevant": 148,
+          "eligible_documents": 182,
+          "eligible_relevant": 148,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 148
+        },
+        "train": {
+          "queries": 16,
+          "mailboxes": 2,
+          "parsed_date_queries": 16,
+          "date_excluded_queries": 0,
+          "relevant_documents": 667,
+          "as_of_documents": 14416,
+          "as_of_relevant": 667,
+          "eligible_documents": 865,
+          "eligible_relevant": 667,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 474
+        },
+        "val": {
+          "queries": 17,
+          "mailboxes": 2,
+          "parsed_date_queries": 17,
+          "date_excluded_queries": 0,
+          "relevant_documents": 328,
+          "as_of_documents": 15377,
+          "as_of_relevant": 328,
+          "eligible_documents": 2082,
+          "eligible_relevant": 328,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 328
+        }
+      },
+      "by_mailbox": {
+        "box-2d28af4e4602": {
+          "queries": 7,
+          "mailboxes": 1,
+          "parsed_date_queries": 7,
+          "date_excluded_queries": 0,
+          "relevant_documents": 148,
+          "as_of_documents": 10621,
+          "as_of_relevant": 148,
+          "eligible_documents": 182,
+          "eligible_relevant": 148,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 148
+        },
+        "box-84bd433469cb": {
+          "queries": 6,
+          "mailboxes": 1,
+          "parsed_date_queries": 6,
+          "date_excluded_queries": 0,
+          "relevant_documents": 64,
+          "as_of_documents": 3878,
+          "as_of_relevant": 64,
+          "eligible_documents": 262,
+          "eligible_relevant": 64,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 64
+        },
+        "box-a971835ab404": {
+          "queries": 16,
+          "mailboxes": 1,
+          "parsed_date_queries": 16,
+          "date_excluded_queries": 0,
+          "relevant_documents": 313,
+          "as_of_documents": 12375,
+          "as_of_relevant": 313,
+          "eligible_documents": 1389,
+          "eligible_relevant": 313,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 313
+        },
+        "box-dfac33a7123c": {
+          "queries": 10,
+          "mailboxes": 1,
+          "parsed_date_queries": 10,
+          "date_excluded_queries": 0,
+          "relevant_documents": 603,
+          "as_of_documents": 10538,
+          "as_of_relevant": 603,
+          "eligible_documents": 603,
+          "eligible_relevant": 603,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 410
+        },
+        "box-f9410417c091": {
+          "queries": 1,
+          "mailboxes": 1,
+          "parsed_date_queries": 1,
+          "date_excluded_queries": 0,
+          "relevant_documents": 15,
+          "as_of_documents": 3002,
+          "as_of_relevant": 15,
+          "eligible_documents": 693,
+          "eligible_relevant": 15,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 15
+        }
+      },
+      "per_query": [
+        {
+          "query_id": "SYN-10PLUS-001",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 862,
+          "as_of_relevant": 12,
+          "eligible_documents": 16,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-c520a90e0f715e6cd77d"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-002",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 862,
+          "as_of_relevant": 12,
+          "eligible_documents": 16,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-c520a90e0f715e6cd77d"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-003",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-10"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 1784,
+          "as_of_relevant": 21,
+          "eligible_documents": 23,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-004",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-10-10"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 1784,
+          "as_of_relevant": 21,
+          "eligible_documents": 23,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-005",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-13"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 539,
+          "as_of_relevant": 11,
+          "eligible_documents": 59,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-41f5e484948f2ab2bfa5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-006",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-13"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 539,
+          "as_of_relevant": 11,
+          "eligible_documents": 59,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-41f5e484948f2ab2bfa5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-007",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-17"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 683,
+          "as_of_relevant": 11,
+          "eligible_documents": 39,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-bbc9bc678aba515467f5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-008",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-17"
+          ],
+          "relevant_documents": 11,
+          "as_of_documents": 683,
+          "as_of_relevant": 11,
+          "eligible_documents": 39,
+          "eligible_relevant": 11,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 11,
+          "related_original_queries": [
+            "H-bbc9bc678aba515467f5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-009",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-19"
+          ],
+          "relevant_documents": 10,
+          "as_of_documents": 717,
+          "as_of_relevant": 10,
+          "eligible_documents": 33,
+          "eligible_relevant": 10,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 10,
+          "related_original_queries": [
+            "H-130688ab3eeb3b8dc034"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-010",
+          "mailbox": "box-84bd433469cb",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-19"
+          ],
+          "relevant_documents": 10,
+          "as_of_documents": 717,
+          "as_of_relevant": 10,
+          "eligible_documents": 33,
+          "eligible_relevant": 10,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 10,
+          "related_original_queries": [
+            "H-130688ab3eeb3b8dc034"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-011",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-21"
+          ],
+          "relevant_documents": 17,
+          "as_of_documents": 204,
+          "as_of_relevant": 17,
+          "eligible_documents": 82,
+          "eligible_relevant": 17,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 17,
+          "related_original_queries": [
+            "H-e78b25a116be82858185"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-012",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-21"
+          ],
+          "relevant_documents": 17,
+          "as_of_documents": 204,
+          "as_of_relevant": 17,
+          "eligible_documents": 82,
+          "eligible_relevant": 17,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 17,
+          "related_original_queries": [
+            "H-e78b25a116be82858185"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-013",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-26"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 625,
+          "as_of_relevant": 21,
+          "eligible_documents": 85,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-d523a339e5767794ded5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-014",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-26"
+          ],
+          "relevant_documents": 21,
+          "as_of_documents": 625,
+          "as_of_relevant": 21,
+          "eligible_documents": 85,
+          "eligible_relevant": 21,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 21,
+          "related_original_queries": [
+            "H-d523a339e5767794ded5"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-015",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-28"
+          ],
+          "relevant_documents": 18,
+          "as_of_documents": 753,
+          "as_of_relevant": 18,
+          "eligible_documents": 79,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-016",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-28"
+          ],
+          "relevant_documents": 18,
+          "as_of_documents": 753,
+          "as_of_relevant": 18,
+          "eligible_documents": 79,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-017",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-29"
+          ],
+          "relevant_documents": 16,
+          "as_of_documents": 837,
+          "as_of_relevant": 16,
+          "eligible_documents": 49,
+          "eligible_relevant": 16,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 16,
+          "related_original_queries": [
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-018",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-29"
+          ],
+          "relevant_documents": 16,
+          "as_of_documents": 837,
+          "as_of_relevant": 16,
+          "eligible_documents": 49,
+          "eligible_relevant": 16,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 16,
+          "related_original_queries": [
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-019",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-30"
+          ],
+          "relevant_documents": 14,
+          "as_of_documents": 905,
+          "as_of_relevant": 14,
+          "eligible_documents": 84,
+          "eligible_relevant": 14,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 14,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-020",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-30"
+          ],
+          "relevant_documents": 14,
+          "as_of_documents": 905,
+          "as_of_relevant": 14,
+          "eligible_documents": 84,
+          "eligible_relevant": 14,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 14,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-021",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-31"
+          ],
+          "relevant_documents": 18,
+          "as_of_documents": 975,
+          "as_of_relevant": 18,
+          "eligible_documents": 68,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-91635f29cd1535edaa65"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-022",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-01-31"
+          ],
+          "relevant_documents": 18,
+          "as_of_documents": 975,
+          "as_of_relevant": 18,
+          "eligible_documents": 68,
+          "eligible_relevant": 18,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 18,
+          "related_original_queries": [
+            "H-91635f29cd1535edaa65"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-023",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-02-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 980,
+          "as_of_relevant": 12,
+          "eligible_documents": 70,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-858ce7fee338506cefbe"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-024",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-02-01"
+          ],
+          "relevant_documents": 12,
+          "as_of_documents": 980,
+          "as_of_relevant": 12,
+          "eligible_documents": 70,
+          "eligible_relevant": 12,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 12,
+          "related_original_queries": [
+            "H-858ce7fee338506cefbe"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-025",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-23"
+          ],
+          "relevant_documents": 42,
+          "as_of_documents": 950,
+          "as_of_relevant": 42,
+          "eligible_documents": 42,
+          "eligible_relevant": 42,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 42,
+          "related_original_queries": [
+            "H-746cb14175b115e23160"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-026",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-23"
+          ],
+          "relevant_documents": 42,
+          "as_of_documents": 950,
+          "as_of_relevant": 42,
+          "eligible_documents": 42,
+          "eligible_relevant": 42,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 42,
+          "related_original_queries": [
+            "H-746cb14175b115e23160"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-027",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-25"
+          ],
+          "relevant_documents": 65,
+          "as_of_documents": 1070,
+          "as_of_relevant": 65,
+          "eligible_documents": 65,
+          "eligible_relevant": 65,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-028",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-25"
+          ],
+          "relevant_documents": 65,
+          "as_of_documents": 1070,
+          "as_of_relevant": 65,
+          "eligible_documents": 65,
+          "eligible_relevant": 65,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-029",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-26"
+          ],
+          "relevant_documents": 55,
+          "as_of_documents": 1083,
+          "as_of_relevant": 55,
+          "eligible_documents": 55,
+          "eligible_relevant": 55,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-030",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-26"
+          ],
+          "relevant_documents": 55,
+          "as_of_documents": 1083,
+          "as_of_relevant": 55,
+          "eligible_documents": 55,
+          "eligible_relevant": 55,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-031",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-27"
+          ],
+          "relevant_documents": 13,
+          "as_of_documents": 1083,
+          "as_of_relevant": 13,
+          "eligible_documents": 13,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-d5db790a049dde6f4e92"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-032",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "paraphrase",
+          "requested_dates": [
+            "2028-09-27"
+          ],
+          "relevant_documents": 13,
+          "as_of_documents": 1083,
+          "as_of_relevant": 13,
+          "eligible_documents": 13,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-d5db790a049dde6f4e92"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-033",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-07",
+            "2028-10-08"
+          ],
+          "relevant_documents": 13,
+          "as_of_documents": 1761,
+          "as_of_relevant": 13,
+          "eligible_documents": 19,
+          "eligible_relevant": 13,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 13,
+          "related_original_queries": [
+            "H-86c5f97dafded9493988",
+            "H-fce276dacbc2c7ffdb1a"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-034",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-07",
+            "2028-10-08",
+            "2028-10-09",
+            "2028-10-10"
+          ],
+          "relevant_documents": 41,
+          "as_of_documents": 1784,
+          "as_of_relevant": 41,
+          "eligible_documents": 52,
+          "eligible_relevant": 41,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 41,
+          "related_original_queries": [
+            "H-86c5f97dafded9493988",
+            "H-c09c0c6f82df8a016912",
+            "H-d60cf706badd91a4e721",
+            "H-fce276dacbc2c7ffdb1a"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-035",
+          "mailbox": "box-2d28af4e4602",
+          "mailbox_split": "test",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-10-09",
+            "2028-10-10"
+          ],
+          "relevant_documents": 28,
+          "as_of_documents": 1784,
+          "as_of_relevant": 28,
+          "eligible_documents": 33,
+          "eligible_relevant": 28,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 28,
+          "related_original_queries": [
+            "H-c09c0c6f82df8a016912",
+            "H-d60cf706badd91a4e721"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-036",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-01-28",
+            "2028-01-29"
+          ],
+          "relevant_documents": 34,
+          "as_of_documents": 837,
+          "as_of_relevant": 34,
+          "eligible_documents": 128,
+          "eligible_relevant": 34,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 34,
+          "related_original_queries": [
+            "H-1ff5058ab44a64f0e249",
+            "H-78c01f45929428ddc3ff"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-037",
+          "mailbox": "box-a971835ab404",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-01-30",
+            "2028-01-31",
+            "2028-02-01",
+            "2028-02-02"
+          ],
+          "relevant_documents": 47,
+          "as_of_documents": 980,
+          "as_of_relevant": 47,
+          "eligible_documents": 227,
+          "eligible_relevant": 47,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 47,
+          "related_original_queries": [
+            "H-6f1839b2094abab2d9d7",
+            "H-858ce7fee338506cefbe",
+            "H-91635f29cd1535edaa65",
+            "H-d6683f03cca44a37eddb"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-038",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-09-25",
+            "2028-09-26"
+          ],
+          "relevant_documents": 120,
+          "as_of_documents": 1083,
+          "as_of_relevant": 120,
+          "eligible_documents": 120,
+          "eligible_relevant": 120,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc",
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-039",
+          "mailbox": "box-dfac33a7123c",
+          "mailbox_split": "train",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2028-09-25",
+            "2028-09-26",
+            "2028-09-27"
+          ],
+          "relevant_documents": 133,
+          "as_of_documents": 1083,
+          "as_of_relevant": 133,
+          "eligible_documents": 133,
+          "eligible_relevant": 133,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 50,
+          "related_original_queries": [
+            "H-4413e1d14feece8a14bc",
+            "H-d5db790a049dde6f4e92",
+            "H-e15a571ba6733c1c7996"
+          ]
+        },
+        {
+          "query_id": "SYN-10PLUS-040",
+          "mailbox": "box-f9410417c091",
+          "mailbox_split": "val",
+          "query_type": "date_range",
+          "requested_dates": [
+            "2027-11-26",
+            "2027-11-27",
+            "2027-11-28",
+            "2027-11-29",
+            "2027-11-30"
+          ],
+          "relevant_documents": 15,
+          "as_of_documents": 3002,
+          "as_of_relevant": 15,
+          "eligible_documents": 693,
+          "eligible_relevant": 15,
+          "excluded_by_query_day": 0,
+          "eligible_relevant_at_most_top50": 15,
+          "related_original_queries": [
+            "H-28caa9ba8ebb01e3a98e",
+            "H-370c651816c078415a7d",
+            "H-7344cf0d5bc0d9edb0c5",
+            "H-d307d39328da45a87643",
+            "H-e0a89c82eabee234cdd1"
+          ]
+        }
+      ]
+    }
+  },
+  "manual_letter_classification": {
+    "sha256": "9592846936a702d53a252fc719f1b49e0c777b0e4184a8063e7a7da79e6e5479",
+    "primary_label_counts": {
+      "buyer_return_request": 9,
+      "container_inspection_completed": 4,
+      "container_loaded": 5,
+      "container_pickup_visit_created": 4,
+      "container_unloaded": 4,
+      "electronic_prescription_error": 59,
+      "electronic_receipt": 119,
+      "goods_receipt_notice": 52,
+      "new_order": 397,
+      "other": 282,
+      "payment_declined": 13,
+      "payment_successful": 46,
+      "truck_arrived": 6
+    },
+    "positive_label_counts": {
+      "buyer_return_request": 9,
+      "container_inspection_completed": 4,
+      "container_loaded": 5,
+      "container_pickup_visit_created": 4,
+      "container_unloaded": 4,
+      "electronic_prescription_error": 59,
+      "electronic_receipt": 119,
+      "goods_receipt_notice": 52,
+      "new_order": 397,
+      "other": 282,
+      "payment_declined": 13,
+      "payment_successful": 46,
+      "truck_arrived": 6
+    },
+    "rows": 1000,
+    "fields": [
+      "doc",
+      "doc_dt",
+      "doc_id",
+      "label",
+      "labels",
+      "note",
+      "synthetic_user"
+    ],
+    "unique_doc_ids": 1000,
+    "doc_ids_matched": 1000,
+    "metadata_mismatch": {
+      "text": 0,
+      "mailbox": 0,
+      "date": 0
+    },
+    "doc_ids_appearing_in_new_positives": 18,
+    "query_fields": [],
+    "suitable_for_retrieval": false
+  }
+}

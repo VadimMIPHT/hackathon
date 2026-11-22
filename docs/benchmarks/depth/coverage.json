@@ -1,0 +1,953 @@
+{
+  "config": {
+    "archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+    "split": "val",
+    "split_seed": 42,
+    "e5": {
+      "repo": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "max_length": 256,
+      "document_batch_size": 32,
+      "model_dtype": "fp16",
+      "pooling_dtype": "fp32"
+    },
+    "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+    "e5_candidates_sha256": "1a9b78a1dbc1feafddabe132c67d381e44175ac7033227a30adfee4644401938",
+    "code_base_commit": "0f47058c0da551eedf9270b3c7eb513d624dac3d",
+    "source_sha256": {
+      "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+      "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+      "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+      "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+      "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+      "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+      "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+      "reranker.py": "88a19600129a15c575121b0a4b17dd8e6a6889bc27e3c59144911ab1075e5efa",
+      "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+      "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+      "zero_shot.py": "8a4b49180de495f0e10bd6267566ff2164802eea68a2e2019b052e049d29bbb5"
+    },
+    "filters": "same mailbox and requested day, accessible at query date",
+    "tie_break": "doc_id"
+  },
+  "depths": {
+    "20": {
+      "pairs": 332,
+      "median_pairs_per_query": 20,
+      "max_pairs_per_query": 20,
+      "relevant_found": 105,
+      "relevant_total": 157,
+      "macro_candidate_recall": 0.8523881774932195,
+      "oracle_ndcg@10": 0.9781401782430096,
+      "oracle_recall@10": 0.849411987017029,
+      "per_query": [
+        {
+          "query_id": "H-1ff5058ab44a64f0e249",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 10,
+          "relevant": 18,
+          "candidate_recall": 0.5555555555555556,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 0.5555555555555556,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-37331e6948fece5ff495",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-6f1839b2094abab2d9d7",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 8,
+          "relevant": 14,
+          "candidate_recall": 0.5714285714285714,
+          "oracle": {
+            "ndcg@10": 0.8701249883466592,
+            "recall@10": 0.5714285714285714,
+            "recall@50": 0.5714285714285714,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-78c01f45929428ddc3ff",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 11,
+          "relevant": 16,
+          "candidate_recall": 0.6875,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.625,
+            "recall@50": 0.6875,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-858ce7fee338506cefbe",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 7,
+          "relevant": 12,
+          "candidate_recall": 0.5833333333333334,
+          "oracle": {
+            "ndcg@10": 0.8006937664098819,
+            "recall@10": 0.5833333333333334,
+            "recall@50": 0.5833333333333334,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8d0f3bdcd564c20c8476",
+          "mailbox": "box-a971835ab404",
+          "available": 1,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-91635f29cd1535edaa65",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 10,
+          "relevant": 18,
+          "candidate_recall": 0.5555555555555556,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 0.5555555555555556,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d523a339e5767794ded5",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 10,
+          "relevant": 21,
+          "candidate_recall": 0.47619047619047616,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.47619047619047616,
+            "recall@50": 0.47619047619047616,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d6683f03cca44a37eddb",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e78b25a116be82858185",
+          "mailbox": "box-a971835ab404",
+          "available": 20,
+          "found_relevant": 8,
+          "relevant": 17,
+          "candidate_recall": 0.47058823529411764,
+          "oracle": {
+            "ndcg@10": 0.8701249883466592,
+            "recall@10": 0.47058823529411764,
+            "recall@50": 0.47058823529411764,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-ff32ab10e74ee71987b2",
+          "mailbox": "box-a971835ab404",
+          "available": 7,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-014061ae61905c415f3f",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-28caa9ba8ebb01e3a98e",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-370c651816c078415a7d",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-7344cf0d5bc0d9edb0c5",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8e4cdfaa5894abff2eaa",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8fffd97d149338a5fb31",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-bd3ef39cbc82aacc8bda",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-c3dbc4221930739783ee",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-d307d39328da45a87643",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 4,
+          "relevant": 4,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e0a89c82eabee234cdd1",
+          "mailbox": "box-f9410417c091",
+          "available": 20,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        }
+      ]
+    },
+    "50": {
+      "pairs": 781,
+      "median_pairs_per_query": 50,
+      "max_pairs_per_query": 50,
+      "relevant_found": 150,
+      "relevant_total": 157,
+      "macro_candidate_recall": 0.981359210350807,
+      "oracle_ndcg@10": 1.0,
+      "oracle_recall@10": 0.8737217109065849,
+      "per_query": [
+        {
+          "query_id": "H-1ff5058ab44a64f0e249",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 18,
+          "relevant": 18,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-37331e6948fece5ff495",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-6f1839b2094abab2d9d7",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 14,
+          "relevant": 14,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.7142857142857143,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-78c01f45929428ddc3ff",
+          "mailbox": "box-a971835ab404",
+          "available": 49,
+          "found_relevant": 16,
+          "relevant": 16,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.625,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-858ce7fee338506cefbe",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 11,
+          "relevant": 12,
+          "candidate_recall": 0.9166666666666666,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.8333333333333334,
+            "recall@50": 0.9166666666666666,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8d0f3bdcd564c20c8476",
+          "mailbox": "box-a971835ab404",
+          "available": 1,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-91635f29cd1535edaa65",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 18,
+          "relevant": 18,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d523a339e5767794ded5",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 17,
+          "relevant": 21,
+          "candidate_recall": 0.8095238095238095,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.47619047619047616,
+            "recall@50": 0.8095238095238095,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d6683f03cca44a37eddb",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e78b25a116be82858185",
+          "mailbox": "box-a971835ab404",
+          "available": 50,
+          "found_relevant": 15,
+          "relevant": 17,
+          "candidate_recall": 0.8823529411764706,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5882352941176471,
+            "recall@50": 0.8823529411764706,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-ff32ab10e74ee71987b2",
+          "mailbox": "box-a971835ab404",
+          "available": 7,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-014061ae61905c415f3f",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-28caa9ba8ebb01e3a98e",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-370c651816c078415a7d",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-7344cf0d5bc0d9edb0c5",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8e4cdfaa5894abff2eaa",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8fffd97d149338a5fb31",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-bd3ef39cbc82aacc8bda",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-c3dbc4221930739783ee",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-d307d39328da45a87643",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 4,
+          "relevant": 4,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e0a89c82eabee234cdd1",
+          "mailbox": "box-f9410417c091",
+          "available": 50,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        }
+      ]
+    },
+    "all": {
+      "pairs": 1926,
+      "median_pairs_per_query": 82,
+      "max_pairs_per_query": 262,
+      "relevant_found": 157,
+      "relevant_total": 157,
+      "macro_candidate_recall": 1.0,
+      "oracle_ndcg@10": 1.0,
+      "oracle_recall@10": 0.8737217109065849,
+      "per_query": [
+        {
+          "query_id": "H-1ff5058ab44a64f0e249",
+          "mailbox": "box-a971835ab404",
+          "available": 79,
+          "found_relevant": 18,
+          "relevant": 18,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-37331e6948fece5ff495",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-6f1839b2094abab2d9d7",
+          "mailbox": "box-a971835ab404",
+          "available": 84,
+          "found_relevant": 14,
+          "relevant": 14,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.7142857142857143,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-78c01f45929428ddc3ff",
+          "mailbox": "box-a971835ab404",
+          "available": 49,
+          "found_relevant": 16,
+          "relevant": 16,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.625,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-858ce7fee338506cefbe",
+          "mailbox": "box-a971835ab404",
+          "available": 70,
+          "found_relevant": 12,
+          "relevant": 12,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.8333333333333334,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8d0f3bdcd564c20c8476",
+          "mailbox": "box-a971835ab404",
+          "available": 1,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-91635f29cd1535edaa65",
+          "mailbox": "box-a971835ab404",
+          "available": 68,
+          "found_relevant": 18,
+          "relevant": 18,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5555555555555556,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d523a339e5767794ded5",
+          "mailbox": "box-a971835ab404",
+          "available": 85,
+          "found_relevant": 21,
+          "relevant": 21,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.47619047619047616,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-d6683f03cca44a37eddb",
+          "mailbox": "box-a971835ab404",
+          "available": 5,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e78b25a116be82858185",
+          "mailbox": "box-a971835ab404",
+          "available": 82,
+          "found_relevant": 17,
+          "relevant": 17,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5882352941176471,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-ff32ab10e74ee71987b2",
+          "mailbox": "box-a971835ab404",
+          "available": 7,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-014061ae61905c415f3f",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-28caa9ba8ebb01e3a98e",
+          "mailbox": "box-f9410417c091",
+          "available": 134,
+          "found_relevant": 5,
+          "relevant": 5,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-370c651816c078415a7d",
+          "mailbox": "box-f9410417c091",
+          "available": 93,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-7344cf0d5bc0d9edb0c5",
+          "mailbox": "box-f9410417c091",
+          "available": 173,
+          "found_relevant": 2,
+          "relevant": 2,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8e4cdfaa5894abff2eaa",
+          "mailbox": "box-f9410417c091",
+          "available": 213,
+          "found_relevant": 6,
+          "relevant": 6,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-8fffd97d149338a5fb31",
+          "mailbox": "box-f9410417c091",
+          "available": 7,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-bd3ef39cbc82aacc8bda",
+          "mailbox": "box-f9410417c091",
+          "available": 262,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-c3dbc4221930739783ee",
+          "mailbox": "box-f9410417c091",
+          "available": 209,
+          "found_relevant": 1,
+          "relevant": 1,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": 1.0
+          }
+        },
+        {
+          "query_id": "H-d307d39328da45a87643",
+          "mailbox": "box-f9410417c091",
+          "available": 122,
+          "found_relevant": 4,
+          "relevant": 4,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        },
+        {
+          "query_id": "H-e0a89c82eabee234cdd1",
+          "mailbox": "box-f9410417c091",
+          "available": 171,
+          "found_relevant": 3,
+          "relevant": 3,
+          "candidate_recall": 1.0,
+          "oracle": {
+            "ndcg@10": 1.0,
+            "recall@10": 1.0,
+            "recall@50": 1.0,
+            "mrr@10_singleton": null
+          }
+        }
+      ]
+    }
+  }
+}

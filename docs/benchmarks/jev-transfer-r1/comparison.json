@@ -1,0 +1,1849 @@
+{
+  "source_sha256": {
+    "train.json": "c9e1b9307a618ba6fb8ae0a0a95f1cb5aec23a1f8b4d662db958cbb0a880ab74",
+    "test.json": "0be57c67e45566be0f0c0f70fd7cce985ea2e40ef57f9834d69116f667a6142a",
+    "train_manifest.json": "fb578be16c265dab0049f130f9f0af722e5a0c76b28e0fcd14dcd7b88402c7ef",
+    "split.json": "72f94387aa119874fa695f6b69fead465d5e2dd43a123dc71db9cf5a2ecb1025",
+    "transfer.py": "8f43b4d739d430d3cd4286720a86b976d07f2e31d827b4382ee7fa416cd47611",
+    "compare.py": "f449a2f933992d87c147d9c4988ce8c0e8ca3a31724a73e2a440209c98b9082c",
+    "run_h200.sh": "045d3a4a2818bad45780e944adb4a489ed725ce8d80dffc17df88657feee8960",
+    "evaluate_local.py": "dcc1e327fe3adbf967ca8b74ccaef0da73c3f478be624739dbfad93af248a546",
+    "e5_candidates": "fa7b2d08670cd2fb39c04afd8f38b989965b110f7b047daad0e59bde2360ee22",
+    "previous_bge": "a2727b64507ffd9412662a4a78fb31f7365bdf2a1b8a5779c0a9ccf198d68cf1"
+  },
+  "log": {
+    "environment": {
+      "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+      "source_sha256": {
+        "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+        "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+        "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+        "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+        "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+        "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+        "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+        "final_test.py": "fc0dd8273a2c2684f1572d50e5fe0d431b026689ad65843fcc1eaa14cf7729d4",
+        "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+        "friend_eval_data.py": "e5c3daf0b3fc6eaf03a3da6602605fe35938932aea783e2bb489bbfac3e64d56",
+        "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+        "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+        "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+        "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+        "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+        "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+      },
+      "utc": "2026-11-21T16:22:09.862091+00:00",
+      "host": "ext1.ipavlov.mipt.ru",
+      "python": "3.11.18",
+      "torch": "2.10.0+cu128",
+      "transformers": "4.57.6",
+      "cuda": "12.8",
+      "gpu": "NVIDIA H200",
+      "cuda_visible_devices": "GPU-8a81a780-cddb-5b47-490f-871873b601ec",
+      "gpu_memory_limit_gib": 6,
+      "peak_reserved_gib": 3.142578125
+    },
+    "script_sha256": "8f43b4d739d430d3cd4286720a86b976d07f2e31d827b4382ee7fa416cd47611",
+    "config": {
+      "seed": 42,
+      "epochs": 2,
+      "batch_size": 16,
+      "max_length": 256,
+      "train_layers": 2,
+      "batch_pause_ms": 30,
+      "repo": "BAAI/bge-reranker-v2-m3",
+      "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+      "base_weights_sha256": "d9e3e081faff1eefb84019509b2f5558fd74c1a05a2c7db22f74174fcedb5286",
+      "archive_sha256": "13479c78fbbb8d40df402c5d8ea9df21253526e28d52a931679fdb6900ba169f",
+      "train_manifest_sha256": "fb578be16c265dab0049f130f9f0af722e5a0c76b28e0fcd14dcd7b88402c7ef",
+      "loss": "BCE with logits, equal total weight per query",
+      "optimizer": "AdamW",
+      "learning_rate": 2e-05,
+      "weight_decay": 0.01,
+      "autocast_dtype": "bf16"
+    },
+    "train_query_ids": [
+      "N-001",
+      "N-002",
+      "N-003",
+      "N-004",
+      "N-005",
+      "N-006",
+      "N-007",
+      "N-008",
+      "N-009",
+      "N-010",
+      "N-011",
+      "N-012",
+      "N-013",
+      "N-014",
+      "N-015",
+      "N-016",
+      "N-017",
+      "N-018",
+      "N-019",
+      "N-020",
+      "N-021",
+      "N-022",
+      "N-023",
+      "N-024",
+      "N-025",
+      "N-026",
+      "N-027",
+      "N-028",
+      "N-029",
+      "N-030",
+      "N-031",
+      "N-032",
+      "N-033",
+      "N-034",
+      "N-035",
+      "N-036",
+      "N-037",
+      "N-038",
+      "N-039",
+      "N-040"
+    ],
+    "pairs": 3129,
+    "positives": 1170,
+    "epochs": [
+      {
+        "epoch": 1,
+        "loss": 0.2920471171899968,
+        "seconds": 17.961268186569214
+      },
+      {
+        "epoch": 2,
+        "loss": 0.09323023561091802,
+        "seconds": 17.40373047441244
+      }
+    ],
+    "complete": true,
+    "checkpoint_sha256": "90c6a7b2c0597327eef1bb224cea065641ba3dd66e3dd7f6096517858b0437b6"
+  },
+  "test_environment": {
+    "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+    "source_sha256": {
+      "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+      "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+      "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+      "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+      "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+      "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+      "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+      "final_test.py": "fc0dd8273a2c2684f1572d50e5fe0d431b026689ad65843fcc1eaa14cf7729d4",
+      "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+      "friend_eval_data.py": "e5c3daf0b3fc6eaf03a3da6602605fe35938932aea783e2bb489bbfac3e64d56",
+      "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+      "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+      "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+      "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+      "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+      "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+    },
+    "utc": "2026-11-21T16:22:44.614535+00:00",
+    "host": "ext1.ipavlov.mipt.ru",
+    "python": "3.11.18",
+    "torch": "2.10.0+cu128",
+    "transformers": "4.57.6",
+    "cuda": "12.8",
+    "gpu": "NVIDIA H200",
+    "cuda_visible_devices": "GPU-8a81a780-cddb-5b47-490f-871873b601ec",
+    "gpu_memory_limit_gib": 6,
+    "peak_reserved_gib": 2.431640625
+  },
+  "metrics": {
+    "frozen": {
+      "jev": {
+        "all": {
+          "queries": 99,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8803984574149186,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8022652390522266,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9650821597769557,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8656616193603716,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9328846285581658,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8428350813377551,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9542553097126065,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8603804988831727,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02137068115444065,
+            "wins": 14,
+            "ties": 77,
+            "losses": 8
+          }
+        },
+        "related_originals": {
+          "queries": 25,
+          "mailboxes": 5,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8449993191118084,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6060418111300464,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9567518975876257,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6878826141179083,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9215522347240638,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6410254712607654,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9645757721270946,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6883771196124138,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.04302353740303078,
+            "wins": 6,
+            "ties": 16,
+            "losses": 3
+          }
+        },
+        "unseen_mailboxes": {
+          "queries": 3,
+          "mailboxes": 2,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9732402630493958,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.0,
+            "wins": 0,
+            "ties": 3,
+            "losses": 0
+          }
+        },
+        "other_originals": {
+          "queries": 74,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8923576257605639,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.8685569376745848,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9678964375436212,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9257220941044471,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9367131399886057,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9110140036610624,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9507686670050092,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9184897486368074,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.014055527016403443,
+            "wins": 8,
+            "ties": 61,
+            "losses": 5
+          }
+        },
+        "no_seen_relevant_letters": {
+          "queries": 68,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9061009364276108,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.8896627881921999,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9724447655956228,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9391604718810601,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.93892656415269,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9231065503124327,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9553283533200861,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.931241919844861,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.016401789167396146,
+            "wins": 7,
+            "ties": 58,
+            "losses": 3
+          }
+        }
+      },
+      "public_vk": {
+        "all": {
+          "queries": 99,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8893331599531878,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8489417618428313,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9761904761904762,
+                "n": 42
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9801816557210198,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.92448641343472,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 42
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9424398701925537,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8974458053335058,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9484126984126984,
+                "n": 42
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9722511261559305,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.920361834310141,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9841269841269841,
+                "n": 42
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02981125596337678,
+            "wins": 14,
+            "ties": 79,
+            "losses": 6
+          }
+        },
+        "related_originals": {
+          "queries": 25,
+          "mailboxes": 5,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8336972023294393,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6198093768976122,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9726468685807144,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.7222995305348247,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9430735693361937,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.692663166898461,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.975767208330635,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.7239661972014914,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.03269363899444129,
+            "wins": 6,
+            "ties": 17,
+            "losses": 2
+          }
+        },
+        "unseen_mailboxes": {
+          "queries": 3,
+          "mailboxes": 2,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9732402630493958,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.0,
+            "wins": 0,
+            "ties": 3,
+            "losses": 0
+          }
+        },
+        "other_originals": {
+          "queries": 74,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9081290915828326,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9263513513513514,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.975609756097561,
+                "n": 41
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9827271919170688,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9927927927927928,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 41
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9422257826440267,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9666291291291291,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9471544715447154,
+                "n": 41
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9710632605563682,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9867117117117117,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.983739837398374,
+                "n": 41
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.028837477912341473,
+            "wins": 8,
+            "ties": 62,
+            "losses": 4
+          }
+        },
+        "no_seen_relevant_letters": {
+          "queries": 68,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9204671426615408,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9394607843137255,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.975609756097561,
+                "n": 41
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9844141338887826,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9921568627450981,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 41
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9432992027891687,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9653186274509804,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9471544715447154,
+                "n": 41
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9731030110030983,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9855392156862746,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.983739837398374,
+                "n": 41
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02980380821392956,
+            "wins": 6,
+            "ties": 58,
+            "losses": 4
+          }
+        }
+      }
+    },
+    "date-aware": {
+      "jev": {
+        "all": {
+          "queries": 99,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8803984574149186,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8022652390522266,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9650821597769557,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8656616193603716,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9328846285581658,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8428350813377551,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9542553097126065,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8603804988831727,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9763673673655848,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02137068115444065,
+            "wins": 14,
+            "ties": 77,
+            "losses": 8
+          }
+        },
+        "related_originals": {
+          "queries": 25,
+          "mailboxes": 5,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8449993191118084,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6060418111300464,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9567518975876257,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6878826141179083,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9215522347240638,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6410254712607654,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9645757721270946,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6883771196124138,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9463317466846879,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": null,
+                "n": 0
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.04302353740303078,
+            "wins": 6,
+            "ties": 16,
+            "losses": 3
+          }
+        },
+        "unseen_mailboxes": {
+          "queries": 3,
+          "mailboxes": 2,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9732402630493958,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.0,
+            "wins": 0,
+            "ties": 3,
+            "losses": 0
+          }
+        },
+        "other_originals": {
+          "queries": 74,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8923576257605639,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.8685569376745848,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9678964375436212,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9257220941044471,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9367131399886057,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9110140036610624,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9507686670050092,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9184897486368074,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9865145365145365,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.014055527016403443,
+            "wins": 8,
+            "ties": 61,
+            "losses": 5
+          }
+        },
+        "no_seen_relevant_letters": {
+          "queries": 68,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9061009364276108,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.8896627881921999,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9736842105263158,
+                "n": 38
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9724447655956228,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9391604718810601,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 38
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.93892656415269,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9231065503124327,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9692982456140351,
+                "n": 38
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9553283533200861,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.931241919844861,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9869586296056885,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9824561403508771,
+                "n": 38
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.016401789167396146,
+            "wins": 7,
+            "ties": 58,
+            "losses": 3
+          }
+        }
+      },
+      "public_vk": {
+        "all": {
+          "queries": 99,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8893331599531878,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8489417618428313,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9761904761904762,
+                "n": 42
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9801816557210198,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.92448641343472,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 42
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9424398701925537,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.8974458053335058,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9484126984126984,
+                "n": 42
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9722511261559305,
+                "n": 99
+              },
+              "recall@10": {
+                "mean": 0.920361834310141,
+                "n": 99
+              },
+              "recall@50": {
+                "mean": 0.9875930664700718,
+                "n": 99
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9841269841269841,
+                "n": 42
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02981125596337678,
+            "wins": 14,
+            "ties": 79,
+            "losses": 6
+          }
+        },
+        "related_originals": {
+          "queries": 25,
+          "mailboxes": 5,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.8336972023294393,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.6198093768976122,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9726468685807144,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.7222995305348247,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9430735693361937,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.692663166898461,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.975767208330635,
+                "n": 25
+              },
+              "recall@10": {
+                "mean": 0.7239661972014914,
+                "n": 25
+              },
+              "recall@50": {
+                "mean": 0.9642018765548177,
+                "n": 25
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.03269363899444129,
+            "wins": 6,
+            "ties": 17,
+            "losses": 2
+          }
+        },
+        "unseen_mailboxes": {
+          "queries": 3,
+          "mailboxes": 2,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9732402630493958,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@10": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "recall@50": {
+                "mean": 1.0,
+                "n": 3
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 1
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.0,
+            "wins": 0,
+            "ties": 3,
+            "losses": 0
+          }
+        },
+        "other_originals": {
+          "queries": 74,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9081290915828326,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9263513513513514,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.975609756097561,
+                "n": 41
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9827271919170688,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9927927927927928,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 41
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9422257826440267,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9666291291291291,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9471544715447154,
+                "n": 41
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9710632605563682,
+                "n": 74
+              },
+              "recall@10": {
+                "mean": 0.9867117117117117,
+                "n": 74
+              },
+              "recall@50": {
+                "mean": 0.9954954954954955,
+                "n": 74
+              },
+              "mrr@10_singleton": {
+                "mean": 0.983739837398374,
+                "n": 41
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.028837477912341473,
+            "wins": 8,
+            "ties": 62,
+            "losses": 4
+          }
+        },
+        "no_seen_relevant_letters": {
+          "queries": 68,
+          "mailboxes": 7,
+          "metrics": {
+            "e5": {
+              "ndcg@10": {
+                "mean": 0.9204671426615408,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9394607843137255,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.975609756097561,
+                "n": 41
+              }
+            },
+            "bge_previous": {
+              "ndcg@10": {
+                "mean": 0.9844141338887826,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9921568627450981,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 1.0,
+                "n": 41
+              }
+            },
+            "bge_base": {
+              "ndcg@10": {
+                "mean": 0.9432992027891687,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9653186274509804,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.9471544715447154,
+                "n": 41
+              }
+            },
+            "bge_new_only": {
+              "ndcg@10": {
+                "mean": 0.9731030110030983,
+                "n": 68
+              },
+              "recall@10": {
+                "mean": 0.9855392156862746,
+                "n": 68
+              },
+              "recall@50": {
+                "mean": 0.9950980392156863,
+                "n": 68
+              },
+              "mrr@10_singleton": {
+                "mean": 0.983739837398374,
+                "n": 41
+              }
+            }
+          },
+          "new_only_vs_base_ndcg": {
+            "mean_delta": 0.02980380821392956,
+            "wins": 6,
+            "ties": 58,
+            "losses": 4
+          }
+        }
+      }
+    }
+  }
+}
