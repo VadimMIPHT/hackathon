@@ -9,7 +9,7 @@ import random
 from datetime import datetime, timezone
 from importlib.metadata import version
 from pathlib import Path
-from time import perf_counter
+from time import perf_counter, sleep
 from typing import Protocol
 
 import torch
@@ -33,7 +33,61 @@ class PairScorer(Protocol):
     def score(self, query: str, documents: list[str]) -> list[float]: ...
 
 
-class Reranker:
+class PairFineTuner:
+    model: torch.nn.Module
+    train_modules: list[torch.nn.Module]
+    weights: dict[str, torch.nn.Parameter]
+    checkpoint_metadata: dict[str, str]
+
+    def logits(self, queries: list[str], documents: list[str]) -> torch.Tensor:
+        raise NotImplementedError
+
+    def fit_epoch(
+        self, pairs: list[TrainingPair], optimizer: torch.optim.Optimizer,
+        batch_size: int, rng: random.Random, batch_pause_ms: float = 0,
+    ) -> float:
+        self.model.eval()
+        for module in self.train_modules:
+            module.train()
+        order = list(range(len(pairs)))
+        rng.shuffle(order)
+        loss_sum = torch.zeros((), device="cuda")
+        for start in range(0, len(order), batch_size):
+            batch = [pairs[index] for index in order[start:start + batch_size]]
+            logits = self.logits([x.query for x in batch], [x.document for x in batch])
+            labels = torch.tensor([x.label for x in batch], dtype=torch.float32, device="cuda")
+            weights = torch.tensor([x.weight for x in batch], dtype=torch.float32, device="cuda")
+            loss = torch.nn.functional.binary_cross_entropy_with_logits(
+                logits, labels, weight=weights,
+            )
+            optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(self.weights.values(), 1.0, error_if_nonfinite=True)
+            optimizer.step()
+            loss_sum += loss.detach() * len(batch)
+            if batch_pause_ms:
+                sleep(batch_pause_ms / 1000)
+        return loss_sum.item() / len(pairs)
+
+    def save_weights(self, path: Path) -> None:
+        temporary = path.with_suffix(".partial")
+        save_file(
+            {name: weight.detach().cpu() for name, weight in self.weights.items()},
+            temporary, metadata=self.checkpoint_metadata,
+        )
+        temporary.replace(path)
+
+    def load_weights(self, path: Path) -> None:
+        with safe_open(path, framework="pt", device="cpu") as checkpoint:
+            if checkpoint.metadata() != self.checkpoint_metadata:
+                raise ValueError("Checkpoint was saved for a different base model revision or layer count")
+            if set(checkpoint.keys()) != self.weights.keys():
+                raise ValueError("Checkpoint parameters do not match the selected trainable layers")
+            saved = {name: checkpoint.get_tensor(name) for name in checkpoint.keys()}
+        self.model.load_state_dict(saved, strict=False)
+
+
+class Reranker(PairFineTuner):
     def __init__(self, model_path: Path, revision: str, max_length: int, train_layers: int) -> None:
         self.max_length = max_length
         self.checkpoint_metadata = {"base_revision": revision, "train_layers": str(train_layers)}
@@ -66,49 +120,6 @@ class Reranker:
         if not all(math.isfinite(score) for score in scores):
             raise ValueError("BGE produced a nonfinite score")
         return scores
-
-    def fit_epoch(
-        self, pairs: list[TrainingPair], optimizer: torch.optim.Optimizer,
-        batch_size: int, rng: random.Random,
-    ) -> float:
-        self.model.eval()
-        for module in self.train_modules:
-            module.train()
-        order = list(range(len(pairs)))
-        rng.shuffle(order)
-        loss_sum = torch.zeros((), device="cuda")
-        for start in range(0, len(order), batch_size):
-            batch = [pairs[index] for index in order[start:start + batch_size]]
-            logits = self.logits([x.query for x in batch], [x.document for x in batch])
-            labels = torch.tensor([x.label for x in batch], dtype=torch.float32, device="cuda")
-            weights = torch.tensor([x.weight for x in batch], dtype=torch.float32, device="cuda")
-            loss = torch.nn.functional.binary_cross_entropy_with_logits(
-                logits, labels, weight=weights,
-            )
-            optimizer.zero_grad(set_to_none=True)
-            loss.backward()
-            torch.nn.utils.clip_grad_norm_(self.weights.values(), 1.0, error_if_nonfinite=True)
-            optimizer.step()
-            loss_sum += loss.detach() * len(batch)
-        return loss_sum.item() / len(pairs)
-
-    def save_weights(self, path: Path) -> None:
-        temporary = path.with_suffix(".partial")
-        save_file(
-            {name: weight.detach().cpu() for name, weight in self.weights.items()},
-            temporary, metadata=self.checkpoint_metadata,
-        )
-        temporary.replace(path)
-
-    def load_weights(self, path: Path) -> None:
-        with safe_open(path, framework="pt", device="cpu") as checkpoint:
-            if checkpoint.metadata() != self.checkpoint_metadata:
-                raise ValueError("Checkpoint was saved for a different BGE revision or layer count")
-            if set(checkpoint.keys()) != self.weights.keys():
-                raise ValueError("Checkpoint parameters do not match the selected trainable layers")
-            saved = {name: checkpoint.get_tensor(name) for name in checkpoint.keys()}
-        self.model.load_state_dict(saved, strict=False)
-
 
 def evaluate(
     dataset: Dataset, candidates: list[CandidateQuery], reranker: PairScorer | None, top_k: int,
