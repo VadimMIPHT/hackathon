@@ -4,6 +4,7 @@
 
 | Эксперимент | Результаты и сырые метрики |
 | --- | --- |
+| Основной поиск с локальным IDF | [Итоговое сравнение и проверка веб-API](local-idf.md) |
 | BM25, E5 и RRF на исходных train и val | [Отчёт](analysis-output/analysis-report.md) · [Train](train-e5-baselines-r2.json) · [Val](val-e5-baselines-r2.json) · [Ранний val](val-e5-baselines-r1.json) · [BM25 smoke](smoke-train-bm25.json) |
 | BGE на top‑20 и слияние рангов | [Отчёт](bge-top20-r1/analysis-report.md) · [Метрики по эпохам](bge-top20-r1/metrics.json) · [RRF](rank-fusion-val.json) |
 | BGE, Qwen, RuBERT и CatBoost на общем пуле E5 | [Отчёт](compare-r1/analysis-report.md) · [Сравнение](compare-r1/comparison.json) |
@@ -16,4 +17,4 @@
 | BM25 из `team-smartmail` на тех же запросах и метках | [Разбор ветки](team-smartmail/README.md) · [Метрики](team-smartmail/metrics.json) |
 | Маршрутизация Pismo через Jev | [Разработка](pismo/jev-routing-20261121.json) · [Holdout](pismo/jev-routing-holdout-20261121.json) · [Конфигурации](../../configs/) |
 
-[Разбиение по почтовым ящикам, seed 42](mailbox-split.json). В результатах маршрутизации сохранены метрики и решения по кейсам. Тексты запросов доступны в соответствующих конфигурациях. В первом замере маршрутизации исходный JSON не записал ревизию кода и окружение.
+[Разбиение по почтовым ящикам, seed 42](mailbox-split.json). В результатах маршрутизации сохранены метрики и решения по кейсам. Тексты запросов доступны в соответствующих конфигурациях. В первом замере маршрутизации исходный JSON не записал ревизию кода и окружение. [Инструкция по воспроизведению экспериментов с E5 и BGE](neural-search.md).

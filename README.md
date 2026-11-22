@@ -1,79 +1,35 @@
-# Умный поиск в Почте
+# Письмо · умный поиск VK Tech
 
-Основной поиск в корпусе VK использует BM25 с локальным IDF из ветки [`team-smartmail`](https://github.com/VadimMIPHT/hackathon/tree/afd7fd2db71edf87c9b41d2b490fc72efc3f882b). Сначала он отбирает письма по ящику, дате и фильтрам, затем считает IDF внутри этого набора. Текст обрабатывается русским стеммером, префиксами и доменными синонимами. Для основной выдачи достаточно Python. E5 + BGE доступен как дополнительный режим при запуске с моделями.
+Поиск по архиву из **16 376 писем в 12 ящиках**. Пользователь может описать письмо своими словами, указать день или диапазон дат и открыть найденное письмо. В чате можно уточнить результат и поставить условное напоминание.
 
-## Веб-демо «Письмо»
+## Запуск
 
-Для локального запуска нужен Python 3.10+ и ZIP, выданный организаторами. Из корня репозитория выполните команду и откройте http://127.0.0.1:8940/.
+Нужны Python 3.10+ и ZIP организаторов. Из корня репозитория:
 
 ```bash
 python3 -m mail_search.web --archive /path/to/mipt_mail_search_participants.zip
 ```
 
-Если архив лежит в `data/mipt_mail_search_participants.zip`, флаг `--archive` можно опустить. Интерфейс читает письма из всех 12 ящиков архива. Дата в шапке задаёт срез выбранного ящика и точку отсчёта для относительных дат. `POST /api/search` использует BM25 с локальным IDF при `mode: "lexical"` или без поля `mode`. Чтобы включить E5 + BGE, используйте [команду запуска с весами](sites/pismo/README.md#подключение-архива-хакатона).
+Откройте [веб-интерфейс](http://127.0.0.1:8940/). Если ZIP лежит в `data/mipt_mail_search_participants.zip`, путь можно опустить. Поиск работает на CPU из стандартной библиотеки Python.
 
-[Исходники интерфейса, Worker и схема напоминаний](sites/pismo/). Приватная страница Sites работает на отдельном вымышленном наборе, архив организаторов используется локально.
+Для Jev, DeepSeek и условных напоминаний используйте `--openrouter-env --condition-checks 12` с настроенным `OPENROUTER_API_KEY`. [Инструкция для ассистента и настройки запуска](sites/pismo/README.md#спросить-с-deepseek-через-openrouter) · [Сценарий демонстрации](docs/demo.md)
 
-## Данные и окружение
+## Поисковый движок
 
-Положите архив организаторов в `data/mipt_mail_search_participants.zip`. Он читается напрямую. Для нейросетевого поиска нужны Python 3.11, CUDA-версия PyTorch, NumPy, Transformers, tokenizers, safetensors и одна доступная GPU. Замеренные версии окружения включали PyTorch 2.10.0+cu128 и Transformers 4.57.6.
+Фильтры по ящику, срезу и периоду из запроса задают пул писем. [Движок команды SmartMail](https://github.com/VadimMIPHT/hackathon/tree/afd7fd2db71edf87c9b41d2b490fc72efc3f882b) нормализует слова, применяет русский стемминг, мягкие префиксы и доменные синонимы. BM25 вычисляет IDF внутри отфильтрованного пула и возвращает до 50 писем. Режим «Поиск» выполняется локально. В режиме «Авто» Jev выбирает между выдачей и ответом ассистента с источниками.
 
-Подготовьте локальные копии весов и токенизаторов указанных ревизий.
-
-| Модель | Ревизия | Локальный путь |
-| --- | --- | --- |
-| [multilingual-e5-small](https://huggingface.co/intfloat/multilingual-e5-small) | `614241f622f53c4eeff9890bdc4f31cfecc418b3` | `models/e5-small-614241f` |
-| [bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | `953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e` | `models/bge-reranker-v2-m3-953dc6f` |
-
-Исходный архив содержит 16 376 писем и 99 публичных запросов. Генератор проверяет контрольные суммы и назначает каждый ящик целиком в один сплит. При seed 42 в train попадает 55 запросов, в val 21, в test 23.
+Чтобы проверить выдачу, передайте идентификатор ящика, запрос и дату среза. Идентификаторы ящиков возвращает `GET /api/mailboxes`. Ранжированный список идентификаторов писем находится в поле `ids`.
 
 ```bash
-python -m mail_search.dataset \
-  --archive data/mipt_mail_search_participants.zip \
-  --output splits/mailboxes.json --seed 42
+curl -s http://127.0.0.1:8940/api/search \
+  -H 'Content-Type: application/json' \
+  -d '{"mailbox":"box-84bd433469cb","query":"Покажи автовизиты с 12 по 13 сентября 2028 года","asOf":"2028-09-15"}'
 ```
 
-Фильтр оставляет письма нужного ящика, доступные на `query_date`. Основной движок понимает даты, интервалы и относительные выражения. В экспериментах ниже E5 кодирует до 256 токенов на письмо.
+## Результаты
 
-## Получить кандидатов и дообучить BGE
-
-Укажите доступную GPU. На общей машине можно использовать её UUID.
+BM25 с локальным IDF получил **0,9800 nDCG@10** на 139 запросах с метками Jev и **0,9722** на 40 дополнительных формулировках. На исходных 99 запросах с публичными метками VK глобальный IDF набрал **0,9632** против **0,9562** у локального. На 23 запросах локального test по меткам VK оба варианта получили **1,0000**. [Финальное сравнение и протокол](docs/benchmarks/local-idf.md) · [Остальные эксперименты](docs/benchmarks/README.md)
 
 ```bash
-export CUDA_VISIBLE_DEVICES=0
-export OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
-export TOKENIZERS_PARALLELISM=false HF_HUB_OFFLINE=1
-BASE_COMMIT=$(git rev-parse HEAD)
-
-python -m mail_search.benchmark \
-  --archive data/mipt_mail_search_participants.zip \
-  --splits splits/mailboxes.json --split val \
-  --e5-model models/e5-small-614241f \
-  --e5-revision 614241f622f53c4eeff9890bdc4f31cfecc418b3 \
-  --base-commit "$BASE_COMMIT" --output runs/val-e5.json
-
-python -m mail_search.reranker \
-  --archive data/mipt_mail_search_participants.zip \
-  --splits splits/mailboxes.json --e5-candidates runs/val-e5.json \
-  --model models/bge-reranker-v2-m3-953dc6f \
-  --bge-revision 953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e \
-  --extra-judgements configs/refund-judgments.json \
-  --base-commit "$BASE_COMMIT" --output-dir runs/bge-returns
+python3 -m unittest discover -s tests -v
 ```
-
-Обучение использует исходный train и [31 вручную проверенную пару](configs/refund-judgments.json) для восьми дополнительных train-запросов о возвратах. Обновляются два последних слоя и классификационная голова. BCE получает одинаковый суммарный вес от каждого запроса. После двух эпох скрипт сохраняет лучший по `nDCG@10` checkpoint в `runs/bge-returns/best-finetuned.safetensors`.
-
-## Воспроизвести зафиксированный замер test
-
-[Протокол](configs/final-test-protocol.json) фиксирует top-50, обработку дат, версии моделей и контрольную сумму checkpoint. Для точного воспроизведения нужен сохранённый checkpoint команды с указанной суммой. Архив и веса хранятся отдельно. [Отчёты и результаты прогонов](docs/benchmarks/).
-
-```bash
-python -m mail_search.final_test \
-  --archive data/mipt_mail_search_participants.zip \
-  --splits splits/mailboxes.json --protocol configs/final-test-protocol.json \
-  --e5-model models/e5-small-614241f --bge-model models/bge-reranker-v2-m3-953dc6f \
-  --bge-weights runs/bge-returns/best-finetuned.safetensors \
-  --base-commit "$BASE_COMMIT" --output runs/final-test/metrics.json
-```
-
-На локальном test из 23 запросов `nDCG@10` составил 0,9986 у E5 и 0,9940 у каскада. Обе выдачи получили `Recall@50 = 1,0000`. JSON сохраняет выдачу по запросам и параметры окружения. Для серверного p99 нужен отдельный нагрузочный замер.
