@@ -1,0 +1,34 @@
+{
+  "decision_source": "runs/depth/bge-returns.json",
+  "decision_sha256": "b65573073a4b3ed0af818b5f07d4d3ef17a077f97bac4be658c6ca6c46e6640b",
+  "archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+  "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+  "split": "test",
+  "split_seed": 42,
+  "top_k": 50,
+  "e5": {
+    "repo": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "max_length": 256,
+    "document_batch_size": 32,
+    "model_dtype": "fp16",
+    "pooling_dtype": "fp32"
+  },
+  "bge_revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+  "bge_checkpoint_sha256": "d0f05669fd9cfea2144d515ad854f1ff1aceab216c9920c28802c571f4a7b222",
+  "bge_batch_size": 20,
+  "bge_max_length": 256,
+  "bge_train_layers": 2,
+  "date_filter": "query_day",
+  "tie_break": "doc_id",
+  "primary_metric": "ndcg@10",
+  "diagnostics": [
+    "e5_baseline",
+    "top50_oracle",
+    "recall@10",
+    "recall@50",
+    "mrr@10_singleton"
+  ],
+  "e5_weights_sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477",
+  "bge_base_weights_sha256": "d9e3e081faff1eefb84019509b2f5558fd74c1a05a2c7db22f74174fcedb5286"
+}

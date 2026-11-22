@@ -1,0 +1,570 @@
+{
+  "protocol": {
+    "original_archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+    "augmented_archive_sha256": "117387335ed56785fe3368e4fb039336a3cdac47cea1c4add91d52af6588e4fa",
+    "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+    "split_seed": 42,
+    "cohort": "added SYN-10PLUS queries only",
+    "date_modes": [
+      "frozen",
+      "date-aware"
+    ],
+    "top_k": 50,
+    "tie_break": "doc_id"
+  },
+  "sources_sha256": {
+    "candidates.json": "0297a550d6c378e084e9566ec0c6817b0be28571e4df7f31dd3492a310cf44d8",
+    "bge.json": "0b83d80aa715c44a1afbacc361de783e3187c887480b049e3918682c997e3a39",
+    "qwen.json": "95586d4071b0725ab28b1f2b00a7794d46dbf9a387544d9b4bd4a8860fe5a7b8",
+    "qwen-ft.json": "7e220e2011dfe53caaa693d014e9d7d16ded3221f08b458978a5eafa7bcd1c90",
+    "audit.json": "61fff6ef9612f2e20e6e5aca9ea23cf9ba7aa5b227a12d963d48ad12159ad640",
+    "metrics.json": "72d570433b189bb059b82f4e38e5d33d456f067f4077bd8469d86daff5e913b7",
+    "bge-returns.json": "b65573073a4b3ed0af818b5f07d4d3ef17a077f97bac4be658c6ca6c46e6640b"
+  },
+  "script_sha256": "19c3695cc6ea8f6084ab8d6c325650779ec6a5d2cd8da3eb0df291aaa9b40800",
+  "coverage": {
+    "frozen": {
+      "queries": 40,
+      "mailboxes": 5,
+      "parsed_date_queries": 24,
+      "date_excluded_queries": 8,
+      "relevant_documents": 1143,
+      "as_of_documents": 40414,
+      "as_of_relevant": 1143,
+      "eligible_documents": 15271,
+      "eligible_relevant": 850,
+      "excluded_by_query_day": 293,
+      "eligible_relevant_at_most_top50": 805,
+      "retrieved_relevant": 514,
+      "excluded_by_top50_capacity": 45,
+      "excluded_by_e5_ordering": 291,
+      "retrieval_metrics": {
+        "ndcg@10": 0.5169144823079144,
+        "recall@10": 0.25321534295868386,
+        "recall@50": 0.5389492509160306,
+        "mrr@10_singleton": null
+      },
+      "candidate_oracle_metrics": {
+        "ndcg@10": 0.7673538308440608,
+        "recall@10": 0.38231111238533566,
+        "recall@50": 0.5389492509160306,
+        "mrr@10_singleton": null
+      }
+    },
+    "date-aware": {
+      "queries": 40,
+      "mailboxes": 5,
+      "parsed_date_queries": 40,
+      "date_excluded_queries": 0,
+      "relevant_documents": 1143,
+      "as_of_documents": 40414,
+      "as_of_relevant": 1143,
+      "eligible_documents": 3129,
+      "eligible_relevant": 1143,
+      "excluded_by_query_day": 0,
+      "eligible_relevant_at_most_top50": 950,
+      "retrieved_relevant": 892,
+      "excluded_by_top50_capacity": 193,
+      "excluded_by_e5_ordering": 58,
+      "retrieval_metrics": {
+        "ndcg@10": 0.8119309675964254,
+        "recall@10": 0.41423039756877156,
+        "recall@50": 0.8992950987892615,
+        "mrr@10_singleton": null
+      },
+      "candidate_oracle_metrics": {
+        "ndcg@10": 0.9967531247086665,
+        "recall@10": 0.5539558314369696,
+        "recall@50": 0.8992950987892615,
+        "mrr@10_singleton": null
+      }
+    }
+  },
+  "methods": {
+    "BGE после обучения": {
+      "config": {
+        "name": "bge",
+        "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+        "base_weights_sha256": "d9e3e081faff1eefb84019509b2f5558fd74c1a05a2c7db22f74174fcedb5286",
+        "checkpoint_sha256": "d0f05669fd9cfea2144d515ad854f1ff1aceab216c9920c28802c571f4a7b222",
+        "max_length": 256,
+        "train_layers": 2,
+        "batch_size": 20,
+        "batch_pause_ms": 0
+      },
+      "environment": {
+        "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+        "source_sha256": {
+          "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+          "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+          "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+          "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+          "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+          "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+          "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+          "final_test.py": "fc0dd8273a2c2684f1572d50e5fe0d431b026689ad65843fcc1eaa14cf7729d4",
+          "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+          "friend_eval_data.py": "e5c3daf0b3fc6eaf03a3da6602605fe35938932aea783e2bb489bbfac3e64d56",
+          "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+          "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+          "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+          "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+          "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+          "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+        },
+        "utc": "2026-11-21T11:51:41.904522+00:00",
+        "host": "ext1.ipavlov.mipt.ru",
+        "python": "3.11.18",
+        "torch": "2.10.0+cu128",
+        "transformers": "4.57.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA H200",
+        "cuda_visible_devices": "GPU-8a81a780-cddb-5b47-490f-871873b601ec",
+        "gpu_memory_limit_gib": 5.0,
+        "peak_reserved_gib": 2.4453125
+      }
+    },
+    "Qwen готовый": {
+      "config": {
+        "name": "qwen",
+        "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+        "base_weights_sha256": "27cd75a405b9c1b46b59abfd88aaa209e6fed2a1972cde9b70e7659537c5e65b",
+        "checkpoint_sha256": null,
+        "max_length": 256,
+        "train_layers": null,
+        "batch_size": 20,
+        "batch_pause_ms": 0
+      },
+      "environment": {
+        "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+        "source_sha256": {
+          "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+          "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+          "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+          "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+          "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+          "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+          "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+          "final_test.py": "fc0dd8273a2c2684f1572d50e5fe0d431b026689ad65843fcc1eaa14cf7729d4",
+          "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+          "friend_eval_data.py": "e5c3daf0b3fc6eaf03a3da6602605fe35938932aea783e2bb489bbfac3e64d56",
+          "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+          "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+          "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+          "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+          "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+          "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+        },
+        "utc": "2026-11-21T11:52:17.513729+00:00",
+        "host": "ext1.ipavlov.mipt.ru",
+        "python": "3.11.18",
+        "torch": "2.10.0+cu128",
+        "transformers": "4.57.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA H200",
+        "cuda_visible_devices": "GPU-8a81a780-cddb-5b47-490f-871873b601ec",
+        "gpu_memory_limit_gib": 5.0,
+        "peak_reserved_gib": 1.3984375
+      }
+    },
+    "Qwen после обучения": {
+      "config": {
+        "name": "qwen-ft",
+        "revision": "e61197ed45024b0ed8a2d74b80b4d909f1255473",
+        "base_weights_sha256": "27cd75a405b9c1b46b59abfd88aaa209e6fed2a1972cde9b70e7659537c5e65b",
+        "checkpoint_sha256": "d268e06c91a004b7eb14a3893595843194ec917df610be06823fc24c9393ed07",
+        "max_length": 256,
+        "train_layers": 2,
+        "batch_size": 20,
+        "batch_pause_ms": 0
+      },
+      "environment": {
+        "code_base_commit": "2c4de80d904e430f642c658ff11fc10ef4b7beff",
+        "source_sha256": {
+          "benchmark.py": "6d2fd585fb193be8151b4fb7b8bb7823aab6c68bf71d8520e0d6f1c1c07bec5d",
+          "boost.py": "f94d036024922fbe4cb85e6b94cca0432b1acf9efddcfc647bf31bb4d1e70c4e",
+          "boost_features.py": "b49b6600928a9f3e862f435b5531014b99b4401c57a41549cb37f59cc2d8350a",
+          "dataset.py": "210230285c903a91bc3d8f99b1d8661685a6c1c0c5656a5900c3ac1498b71afe",
+          "depth_benchmark.py": "1529f778a7c604b1c86b3a1c8f4a56bd9c67e5c667f7e67502b9fe88536fa3d2",
+          "depth_boost.py": "a5ae0a40b32c0741361aa777c53640e1d8d6fc9d26e9302054680b38ef381dd7",
+          "e5.py": "372c0e604c89e97adec2863f3d20567f9fc0b28cf275dd11b0e7cc709c9abfa1",
+          "final_test.py": "fc0dd8273a2c2684f1572d50e5fe0d431b026689ad65843fcc1eaa14cf7729d4",
+          "friend_eval.py": "a7b19d6ef2e330a16b26b61fab3ed7b147ca813dcd03ccf57c26f1d36e0a2b2a",
+          "friend_eval_data.py": "e5c3daf0b3fc6eaf03a3da6602605fe35938932aea783e2bb489bbfac3e64d56",
+          "friend_eval_dates.py": "a6b62d0ebd816ce1fe47e21d0450e69ef3376fb288009718ec72594efe21bbaf",
+          "qwen_train.py": "ed0783a5b76faa14fcfbd5ad068af58dd51517a54c75372e5f1ce4dc68c24b99",
+          "reranker.py": "213816022358ac9b6c0c754deb48487b0ac294cb7639bf3a1d387fb59bc63d25",
+          "reranker_data.py": "638d4542d7c43ab18f188c3c041b5b12bd805d1127e5d20ed920937b376a34a5",
+          "retrieval.py": "506fee405419d3827edcb790d0e601e6e57503d2f0cb8f310c8361acdb3eb1ed",
+          "zero_shot.py": "7412a876d37ec2d3b8bae88bd3368b44fe84a143ac03507c5ed93d893463316e"
+        },
+        "utc": "2026-11-21T11:53:01.609265+00:00",
+        "host": "ext1.ipavlov.mipt.ru",
+        "python": "3.11.18",
+        "torch": "2.10.0+cu128",
+        "transformers": "4.57.6",
+        "cuda": "12.8",
+        "gpu": "NVIDIA H200",
+        "cuda_visible_devices": "GPU-8a81a780-cddb-5b47-490f-871873b601ec",
+        "gpu_memory_limit_gib": 5.0,
+        "peak_reserved_gib": 2.7109375
+      }
+    }
+  },
+  "slices": {
+    "frozen": {
+      "Все запросы": {
+        "queries": 40,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.5169144823079144,
+            "recall@10": 0.25321534295868386,
+            "recall@50": 0.5389492509160306
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.67129402465289,
+            "recall@10": 0.3324654025396258,
+            "recall@50": 0.5389492509160306
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.5871011578038784,
+            "recall@10": 0.28642558247407046,
+            "recall@50": 0.5389492509160306
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.5134540085002576,
+            "recall@10": 0.2524772452720568,
+            "recall@50": 0.5389492509160306
+          }
+        }
+      },
+      "Перефразы": {
+        "queries": 32,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.4487768609238515,
+            "recall@10": 0.26400165398327163,
+            "recall@50": 0.5811144941659647
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.6303137768679016,
+            "recall@10": 0.36030687551827256,
+            "recall@50": 0.5811144941659647
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.5250726933066371,
+            "recall@10": 0.30275710043632836,
+            "recall@50": 0.5811144941659647
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.44968177490210554,
+            "recall@10": 0.2649172671691054,
+            "recall@50": 0.5811144941659647
+          }
+        }
+      },
+      "Интервалы": {
+        "queries": 8,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.7894649678441659,
+            "recall@10": 0.21007009886033287,
+            "recall@50": 0.37028827791629415
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.8352150157928434,
+            "recall@10": 0.22109951062503877,
+            "recall@50": 0.37028827791629415
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8352150157928434,
+            "recall@10": 0.22109951062503877,
+            "recall@50": 0.37028827791629415
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.7685429428928657,
+            "recall@10": 0.20271715768386228,
+            "recall@50": 0.37028827791629415
+          }
+        }
+      },
+      "Ящики train": {
+        "queries": 16,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.47579596697961757,
+            "recall@10": 0.1881647409607936,
+            "recall@50": 0.508688734511103
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.593580386023236,
+            "recall@10": 0.2528500556461083,
+            "recall@50": 0.508688734511103
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.5358249585588213,
+            "recall@10": 0.22671161075766338,
+            "recall@50": 0.508688734511103
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.5449954488212413,
+            "recall@10": 0.238556016352069,
+            "recall@50": 0.508688734511103
+          }
+        }
+      },
+      "Ящики val": {
+        "queries": 17,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.435302044972419,
+            "recall@10": 0.23677496029700992,
+            "recall@50": 0.5132071017810546
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.6756147922419938,
+            "recall@10": 0.3574634317640281,
+            "recall@50": 0.5132071017810546
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.5318719784461216,
+            "recall@10": 0.2737353326812577,
+            "recall@50": 0.5132071017810546
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.34995351866120683,
+            "recall@10": 0.18270921635237325,
+            "recall@50": 0.5132071017810546
+          }
+        }
+      },
+      "Ящики test": {
+        "queries": 7,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.8091012937302243,
+            "recall@10": 0.44182907684649847,
+            "recall@50": 0.6706327934550931
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.8384319059471323,
+            "recall@10": 0.4537338387512604,
+            "recall@50": 0.6706327934550931
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8384319059471323,
+            "recall@10": 0.4537338387512604,
+            "recall@50": 0.6706327934550931
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.8384319059471323,
+            "recall@10": 0.4537338387512604,
+            "recall@50": 0.6706327934550931
+          }
+        }
+      },
+      "Ящики вне train": {
+        "queries": 24,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.5443268258601122,
+            "recall@10": 0.2965824109572774,
+            "recall@50": 0.5591229285193158
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.7231031170726593,
+            "recall@10": 0.3855423004686375,
+            "recall@50": 0.5591229285193158
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.6212852906339164,
+            "recall@10": 0.3262348969516752,
+            "recall@50": 0.5591229285193158
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.4924263816196018,
+            "recall@10": 0.26175806455204864,
+            "recall@50": 0.5591229285193158
+          }
+        }
+      }
+    },
+    "date-aware": {
+      "Все запросы": {
+        "queries": 40,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.8119309675964254,
+            "recall@10": 0.41423039756877156,
+            "recall@50": 0.8992950987892615
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.972780832915202,
+            "recall@10": 0.5295240132551514,
+            "recall@50": 0.8992950987892615
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8915982936978395,
+            "recall@10": 0.45837360524812576,
+            "recall@50": 0.8992950987892615
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.8203654488337323,
+            "recall@10": 0.4153953907390915,
+            "recall@50": 0.8992950987892615
+          }
+        }
+      },
+      "Перефразы": {
+        "queries": 32,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.7848619455408332,
+            "recall@10": 0.4405355444188165,
+            "recall@50": 0.9363331725464078
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.9659760411440025,
+            "recall@10": 0.5774566528242999,
+            "recall@50": 0.9363331725464078
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8666675928078236,
+            "recall@10": 0.49092248896936397,
+            "recall@50": 0.9363331725464078
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.7820646322644905,
+            "recall@10": 0.4372990035903639,
+            "recall@50": 0.9363331725464078
+          }
+        }
+      },
+      "Интервалы": {
+        "queries": 8,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.9202070558187941,
+            "recall@10": 0.30900981016859175,
+            "recall@50": 0.7511428037606761
+          },
+          "BGE после обучения": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.33779345497855756,
+            "recall@50": 0.7511428037606761
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.9913210972579029,
+            "recall@10": 0.328178070363173,
+            "recall@50": 0.7511428037606761
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.9735687151106994,
+            "recall@10": 0.3277809393340019,
+            "recall@50": 0.7511428037606761
+          }
+        }
+      },
+      "Ящики train": {
+        "queries": 16,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.7934188494270696,
+            "recall@10": 0.35334955614560876,
+            "recall@50": 0.8616008443311075
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.9481864587446726,
+            "recall@10": 0.47323591978197244,
+            "recall@50": 0.8616008443311075
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8975632663182518,
+            "recall@10": 0.4164177379637906,
+            "recall@50": 0.8616008443311075
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.9125110908883884,
+            "recall@10": 0.43346319250924514,
+            "recall@50": 0.8616008443311075
+          }
+        }
+      },
+      "Ящики val": {
+        "queries": 17,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.771816338094328,
+            "recall@10": 0.4203917799910953,
+            "recall@50": 0.8947400403632458
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.9847205868643129,
+            "recall@10": 0.565874242896992,
+            "recall@50": 0.8947400403632458
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8454323946328428,
+            "recall@10": 0.4564623408812837,
+            "recall@50": 0.8947400403632458
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.6596729705373575,
+            "recall@10": 0.3347694626453001,
+            "recall@50": 0.8947400403632458
+          }
+        }
+      },
+      "Ящики test": {
+        "queries": 7,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.9516656236314751,
+            "recall@10": 0.5384232492246429,
+            "recall@50": 0.9965156794425087
+          },
+          "BGE после обучения": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5699033834922337,
+            "recall@50": 0.9965156794425087
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.9900812540090318,
+            "recall@10": 0.5589143725032226,
+            "recall@50": 0.9965156794425087
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 1.0,
+            "recall@10": 0.5699033834922337,
+            "recall@50": 0.9965156794425087
+          }
+        }
+      },
+      "Ящики вне train": {
+        "queries": 24,
+        "models": {
+          "E5": {
+            "ndcg@10": 0.8242723797093292,
+            "recall@10": 0.45481762518421337,
+            "recall@50": 0.9244246017613642
+          },
+          "BGE после обучения": {
+            "ndcg@10": 0.9891770823622216,
+            "recall@10": 0.5670494089039374,
+            "recall@50": 0.9244246017613642
+          },
+          "Qwen готовый": {
+            "ndcg@10": 0.8876216452842313,
+            "recall@10": 0.48634418343768254,
+            "recall@50": 0.9244246017613642
+          },
+          "Qwen после обучения": {
+            "ndcg@10": 0.7589350207972949,
+            "recall@10": 0.40335018955898905,
+            "recall@50": 0.9244246017613642
+          }
+        }
+      }
+    }
+  }
+}

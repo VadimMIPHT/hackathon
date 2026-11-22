@@ -1,0 +1,823 @@
+{
+  "protocol": {
+    "original_archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+    "augmented_archive_sha256": "117387335ed56785fe3368e4fb039336a3cdac47cea1c4add91d52af6588e4fa",
+    "split_manifest_sha256": "d39646355d85d0dd1407e54e79607f34502479118e3e5d4fcf65c24d34505adb",
+    "split_seed": 42,
+    "cohort": "added SYN-10PLUS queries only",
+    "date_modes": [
+      "frozen",
+      "date-aware"
+    ],
+    "top_k": 50,
+    "tie_break": "doc_id",
+    "jev_archive_sha256": "13479c78fbbb8d40df402c5d8ea9df21253526e28d52a931679fdb6900ba169f"
+  },
+  "manifest": {
+    "documents": 16376,
+    "queries": 139,
+    "qrels": 1891,
+    "qrels_full": 2276264,
+    "sha256": {
+      "README.md": "9894cb006633cdef9f41853450f575174b4daf7a51d2d1c45420127919a45990",
+      "documents.jsonl": "06feb4791a52faeb777f1a8d4c22d99efd26a279943a19bdfbd0b14bc9c8daa5",
+      "qrels_dev.jsonl": "a152bf26baa5f665b439f7ba6f92e80b4e9c2db3a3e0619531f6bc5f62077cce",
+      "qrels_full.jsonl": "6a3927ce71687161aafc24e734dfd029f91477f1565bfc1439ed4e79b8420d06",
+      "queries_dev.jsonl": "034654b1e13fe87cb5b835080eadc7753bea4e544c347d9cbc43477bef0b693f"
+    }
+  },
+  "test": {
+    "H-00d886ad4b22c127fa0f": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-012df59077167bfec30e": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-014061ae61905c415f3f": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-0411ea4a25402070a382": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-0cd67c437c10c65654d5": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-124bc9656e09acbcf2fc": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 5,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 18,
+      "unseen_mailbox": false
+    },
+    "H-130688ab3eeb3b8dc034": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 10,
+      "public_positive_overlap_with_positive_train_letter": 10,
+      "jev_positive_overlap_with_any_train_letter": 10,
+      "unseen_mailbox": false
+    },
+    "H-13bf279075424f9d062c": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-1ff5058ab44a64f0e249": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 18,
+      "public_positive_overlap_with_positive_train_letter": 18,
+      "jev_positive_overlap_with_any_train_letter": 18,
+      "unseen_mailbox": false
+    },
+    "H-269dfc4a89f6ce5171df": {
+      "mailbox": "box-84dd8d9560e6",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": true
+    },
+    "H-27202d6f9d538e1fee46": {
+      "mailbox": "box-d7961fc39a68",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": true
+    },
+    "H-28089e075440151eaf13": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-28caa9ba8ebb01e3a98e": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 5,
+      "public_positive_overlap_with_positive_train_letter": 5,
+      "jev_positive_overlap_with_any_train_letter": 5,
+      "unseen_mailbox": false
+    },
+    "H-2b6de91c0dab98bc9cb4": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-370c651816c078415a7d": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 1,
+      "public_positive_overlap_with_positive_train_letter": 1,
+      "jev_positive_overlap_with_any_train_letter": 2,
+      "unseen_mailbox": false
+    },
+    "H-37331e6948fece5ff495": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 2,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 2,
+      "unseen_mailbox": false
+    },
+    "H-3c98fa4bf29e69b4bf23": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-41f5e484948f2ab2bfa5": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 11,
+      "public_positive_overlap_with_positive_train_letter": 11,
+      "jev_positive_overlap_with_any_train_letter": 28,
+      "unseen_mailbox": false
+    },
+    "H-43fb323d1e05016bc6d6": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 4,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 12,
+      "unseen_mailbox": false
+    },
+    "H-4413e1d14feece8a14bc": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 55,
+      "public_positive_overlap_with_positive_train_letter": 55,
+      "jev_positive_overlap_with_any_train_letter": 55,
+      "unseen_mailbox": false
+    },
+    "H-44c1d81209f1973c2f94": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4519ace06f566a9f1637": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-485e5fba640a58a7ac34": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4900a2e5cc9c09fddd53": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4b35b0ae76e9b5da16d5": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4bf66905298157b11c51": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4cdc6eb005231127037f": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-4d221a3275e4f0f2827a": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-50e2d11d835592b1c2fe": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-549005a76cc00372cb32": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-5c39ab08b6f0c3c9bf6a": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-5dba0b5af406db4d46ea": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-61c6a92d704e52d0ff9f": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-680ce1212552516e8903": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-69c89eadad29ee8cc230": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-6f1839b2094abab2d9d7": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 14,
+      "public_positive_overlap_with_positive_train_letter": 14,
+      "jev_positive_overlap_with_any_train_letter": 14,
+      "unseen_mailbox": false
+    },
+    "H-71baff97faa4b4ddedd4": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-7344cf0d5bc0d9edb0c5": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 2,
+      "public_positive_overlap_with_positive_train_letter": 2,
+      "jev_positive_overlap_with_any_train_letter": 2,
+      "unseen_mailbox": false
+    },
+    "H-746cb14175b115e23160": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 42,
+      "public_positive_overlap_with_positive_train_letter": 42,
+      "jev_positive_overlap_with_any_train_letter": 42,
+      "unseen_mailbox": false
+    },
+    "H-7631815d9be3295a022e": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-78c01f45929428ddc3ff": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 16,
+      "public_positive_overlap_with_positive_train_letter": 16,
+      "jev_positive_overlap_with_any_train_letter": 16,
+      "unseen_mailbox": false
+    },
+    "H-805ba1134cd6be3479bc": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-828bf793964cb3bb99e8": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-839f7c5c7c9477b13aae": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-858ce7fee338506cefbe": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 12,
+      "public_positive_overlap_with_positive_train_letter": 12,
+      "jev_positive_overlap_with_any_train_letter": 12,
+      "unseen_mailbox": false
+    },
+    "H-86c5f97dafded9493988": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 5,
+      "public_positive_overlap_with_positive_train_letter": 5,
+      "jev_positive_overlap_with_any_train_letter": 5,
+      "unseen_mailbox": false
+    },
+    "H-897cee85fae472edd3f0": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-8a52f19bb09882009987": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-8d0f3bdcd564c20c8476": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-8e4cdfaa5894abff2eaa": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-8fffd97d149338a5fb31": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-90999e1248f84980b386": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 9,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 9,
+      "unseen_mailbox": false
+    },
+    "H-91635f29cd1535edaa65": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 18,
+      "public_positive_overlap_with_positive_train_letter": 18,
+      "jev_positive_overlap_with_any_train_letter": 18,
+      "unseen_mailbox": false
+    },
+    "H-91bde5fc099890a9dabd": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-92a890e2b6226d9a3ba0": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-95e1712dc7fb8841b458": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-9bf9d551a88f414e1533": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-ab890ffc34d25c1cd4e8": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-ad1b042c390177db6338": {
+      "mailbox": "box-84dd8d9560e6",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": true
+    },
+    "H-b14bc1c93dbdc0cbc5ad": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 3,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 3,
+      "unseen_mailbox": false
+    },
+    "H-b1fd1d2aa7fc4b4a7a7a": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-b376c0a8bd6e89e51519": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-b7a3354578462ebe7d7b": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-bbc9bc678aba515467f5": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 11,
+      "public_positive_overlap_with_positive_train_letter": 11,
+      "jev_positive_overlap_with_any_train_letter": 14,
+      "unseen_mailbox": false
+    },
+    "H-bd3ef39cbc82aacc8bda": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-bedc577fecb613a4fe31": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-c09c0c6f82df8a016912": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 21,
+      "public_positive_overlap_with_positive_train_letter": 21,
+      "jev_positive_overlap_with_any_train_letter": 22,
+      "unseen_mailbox": false
+    },
+    "H-c0b6f84b79eba1edda1f": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-c355f723bea47a8d02ed": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 7,
+      "public_positive_overlap_with_positive_train_letter": 1,
+      "jev_positive_overlap_with_any_train_letter": 17,
+      "unseen_mailbox": false
+    },
+    "H-c3dbc4221930739783ee": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-c413a2949694d80bce71": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-c520a90e0f715e6cd77d": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 12,
+      "public_positive_overlap_with_positive_train_letter": 12,
+      "jev_positive_overlap_with_any_train_letter": 13,
+      "unseen_mailbox": false
+    },
+    "H-c57d21c51672612ec132": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-cf13f62178c5b81140c8": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-d307d39328da45a87643": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 4,
+      "public_positive_overlap_with_positive_train_letter": 4,
+      "jev_positive_overlap_with_any_train_letter": 5,
+      "unseen_mailbox": false
+    },
+    "H-d44d9649992120760d24": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-d4d8f8d94810e0efcfa8": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-d523a339e5767794ded5": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 21,
+      "public_positive_overlap_with_positive_train_letter": 21,
+      "jev_positive_overlap_with_any_train_letter": 21,
+      "unseen_mailbox": false
+    },
+    "H-d5db790a049dde6f4e92": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 13,
+      "public_positive_overlap_with_positive_train_letter": 13,
+      "jev_positive_overlap_with_any_train_letter": 13,
+      "unseen_mailbox": false
+    },
+    "H-d60cf706badd91a4e721": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 7,
+      "public_positive_overlap_with_positive_train_letter": 7,
+      "jev_positive_overlap_with_any_train_letter": 7,
+      "unseen_mailbox": false
+    },
+    "H-d6683f03cca44a37eddb": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 3,
+      "public_positive_overlap_with_positive_train_letter": 3,
+      "jev_positive_overlap_with_any_train_letter": 3,
+      "unseen_mailbox": false
+    },
+    "H-d80b250c130d0d169ce5": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-e0a89c82eabee234cdd1": {
+      "mailbox": "box-f9410417c091",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 3,
+      "public_positive_overlap_with_positive_train_letter": 3,
+      "jev_positive_overlap_with_any_train_letter": 4,
+      "unseen_mailbox": false
+    },
+    "H-e15a2fa422d9f852aef1": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-e15a571ba6733c1c7996": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 65,
+      "public_positive_overlap_with_positive_train_letter": 65,
+      "jev_positive_overlap_with_any_train_letter": 65,
+      "unseen_mailbox": false
+    },
+    "H-e785745160df644052ec": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-e78b25a116be82858185": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 17,
+      "public_positive_overlap_with_positive_train_letter": 17,
+      "jev_positive_overlap_with_any_train_letter": 17,
+      "unseen_mailbox": false
+    },
+    "H-e800fd8a44e2618dff83": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-e943c32b752bffb933db": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-ea60254178c21d7ab3a3": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-f138aeed2f6b400bba48": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-f3404b55d6a511de876b": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-f5c6f1ad46d5c9df7cac": {
+      "mailbox": "box-84bd433469cb",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-f7df24b1753a0d02751a": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-f9e862f98790acdb9c63": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-fa7c1c74a00ff852c670": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-fce276dacbc2c7ffdb1a": {
+      "mailbox": "box-2d28af4e4602",
+      "related_original_query": true,
+      "public_positive_overlap_with_any_train_letter": 8,
+      "public_positive_overlap_with_positive_train_letter": 8,
+      "jev_positive_overlap_with_any_train_letter": 8,
+      "unseen_mailbox": false
+    },
+    "H-fec3ca797b16a44cd908": {
+      "mailbox": "box-dfac33a7123c",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    },
+    "H-ff32ab10e74ee71987b2": {
+      "mailbox": "box-a971835ab404",
+      "related_original_query": false,
+      "public_positive_overlap_with_any_train_letter": 0,
+      "public_positive_overlap_with_positive_train_letter": 0,
+      "jev_positive_overlap_with_any_train_letter": 0,
+      "unseen_mailbox": false
+    }
+  }
+}

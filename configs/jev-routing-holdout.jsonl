@@ -1,0 +1,24 @@
+{"group":"search","expected":"search","query":"Нужны письма по поставке за июль."}
+{"group":"search","expected":"search","query":"Билеты Казань командировка"}
+{"group":"search","expected":"search","query":"Можно показать сообщения со счётом от курьерской службы?"}
+{"group":"search","expected":"search","query":"Найди сообщения, в которых объясняют, почему отменили доставку."}
+{"group":"search","expected":"search","query":"Отобрази непрочитанные письма со словами «где мой заказ»."}
+{"group":"search","expected":"search","query":"Выведи список последних писем от команды склада."}
+{"group":"search","expected":"search","query":"Письма про счёт № 81024"}
+{"group":"search","expected":"search","query":"Найди по почте «Срок оплаты согласован»."}
+{"group":"search","expected":"search","query":"Покажи только те, где есть скан акта.","previous":"Переписка с поставщиком за июнь"}
+{"group":"search","expected":"search","query":"А теперь письма от этого же отправителя за октябрь.","previous":"Счета от бухгалтерии за ноябрь"}
+{"group":"search","expected":"search","query":"Остались ещё письма с чеками? Покажи их.","previous":"Квитанции за прошлую неделю"}
+{"group":"search","expected":"search","query":"Покажи второе письмо из списка.","previous":"Найди отчёты о доставке"}
+{"group":"question","expected":"agent","query":"Какие документы нам ещё надо дослать поставщику?"}
+{"group":"question","expected":"agent","query":"Не понимаю, откуда взялась эта доплата.","previous":"Найди переписку про доплату за экспресс-доставку"}
+{"group":"question","expected":"agent","query":"Есть ли уже ответ от склада по этой поставке","previous":"Уведомления о поставке за пятницу"}
+{"group":"question","expected":"agent","query":"В двух словах, о чём письмо бухгалтерии."}
+{"group":"question","expected":"agent","query":"Подскажи, на какую сумму выставили счёт."}
+{"group":"question","expected":"agent","query":"Последние письма с оговорками по договору. Сведи оговорки в один список."}
+{"group":"mixed","expected":"agent","query":"Покажи письма о переносе доставки. Какая дата самая свежая?"}
+{"group":"mixed","expected":"agent","query":"Найди исходное предложение и обновлённое, выдели разницу."}
+{"group":"mixed","expected":"agent","query":"Найди письмо с договором. Напомни завтра его проверить."}
+{"group":"mixed","expected":"agent","query":"Найди сообщения бухгалтерии и скажи, почему платёж вернули."}
+{"group":"followup","expected":"agent","query":"А потом ответили или пока тишина","previous":"Найди письмо, где я запросил акт сверки"}
+{"group":"followup","expected":"agent","query":"В какое время в итоге прислали новые условия","previous":"Найди письма с обновлёнными условиями страхования"}

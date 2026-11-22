@@ -1,0 +1,45 @@
+{
+  "archive_sha256": "2df885f77be8f8aa750b484439fc99dfc2a401fce53306160c03ad95cae0de03",
+  "seed": 42,
+  "splits": {
+    "train": {
+      "mailboxes": [
+        "box-84bd433469cb",
+        "box-84dd8d9560e6",
+        "box-a55c522c6949",
+        "box-dfac33a7123c",
+        "box-fad2b057e79a",
+        "box-fda57474896e"
+      ],
+      "labelled_mailboxes": 3,
+      "documents": 6029,
+      "queries": 55,
+      "qrels": 325,
+      "singleton_queries": 24
+    },
+    "val": {
+      "mailboxes": [
+        "box-12259a301ee2",
+        "box-a971835ab404",
+        "box-f9410417c091"
+      ],
+      "labelled_mailboxes": 2,
+      "documents": 6391,
+      "queries": 21,
+      "qrels": 157,
+      "singleton_queries": 5
+    },
+    "test": {
+      "mailboxes": [
+        "box-2d28af4e4602",
+        "box-90560850fd8e",
+        "box-d7961fc39a68"
+      ],
+      "labelled_mailboxes": 2,
+      "documents": 3956,
+      "queries": 23,
+      "qrels": 83,
+      "singleton_queries": 13
+    }
+  }
+}
